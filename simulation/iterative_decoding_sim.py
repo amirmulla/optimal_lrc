@@ -1,4 +1,5 @@
 import sys
+import os
 
 sys.path.append('./src')
 
@@ -8,7 +9,7 @@ from sage.coding.channel import StaticErrorRateChannel
 
 import csv
 
-print_log = False
+print_log = True
 
 q = 16  # Field size
 n = 15  # Code dimension
@@ -38,6 +39,12 @@ evalpts = C.evaluation_points()
 
 sim_name = "GF_" + str(q) + "_" + sub_group_type[0] + "_" + str(len(sub_group[0])) + "_" + sub_group_type[1] + "_" + str(len(sub_group[1]))
 res_dir = './results'
+
+# Create Directory of not exists
+isExist = os.path.exists(res_dir)
+if not isExist:
+    os.makedirs(res_dir)
+
 res_path = res_dir + '/' + sim_name + '.csv'
 log_path = res_dir + '/' + sim_name + '_log.txt'
 res_file_handle = open(res_path, 'w', newline='')
