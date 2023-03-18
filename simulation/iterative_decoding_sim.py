@@ -111,8 +111,6 @@ print_freq = int(sim_itr/4)
 
 writer.writerow(["Num_of_error_symbols", "average_num_of_iteration","probability_of_success"])
 
-exit()
-
 for n_err in range(1, max_num_of_err):
     print("Error Weight: ", n_err)
     Chan = StaticErrorRateChannel(V, n_err)
