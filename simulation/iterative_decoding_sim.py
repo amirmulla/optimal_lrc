@@ -104,7 +104,7 @@ if print_log:
     print("Second Subgroup Size: ", len(sub_group[1]), file=log_file_handle)
     print("Evaluation Points: ", evalpts, file=log_file_handle)
 
-max_num_of_err = 10
+max_num_of_err = 32
 sim_itr = 5000
 
 print_freq = int(sim_itr/5)
