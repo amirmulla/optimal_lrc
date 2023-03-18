@@ -105,9 +105,9 @@ if print_log:
     print("Evaluation Points: ", evalpts, file=log_file_handle)
 
 max_num_of_err = 10
-sim_itr = 1000
+sim_itr = 5000
 
-print_freq = int(sim_itr/4)
+print_freq = int(sim_itr/5)
 
 writer.writerow(["Num_of_error_symbols", "average_num_of_iteration","probability_of_success"])
 
