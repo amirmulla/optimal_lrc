@@ -25,6 +25,7 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
         self._locality = locality
         self._local_minimum_distance = local_minimum_distance
         self._base_mult_group = base_field.list()[1:base_field.cardinality()]
+        self._base_mult_group.sort()
         self._mult_sub_groups = self._list_mult_subgroups()
         self._add_sub_groups = self._list_add_subgroups()
 
@@ -85,9 +86,11 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
                     # shift group to get the second add subgroup that intersect only at zero
                     if ((i == 1) & (self._locality[0] == self._locality[1]) & (self._sub_group_type[0] == self._sub_group_type[1])):
                         a = base_field.primitive_element()
+                        multiplier = (a**log(len(self._sub_group[0]),2))
                         tmp = []
                         for h in self._sub_group[i]:
-                            tmp.append(h * (a**2))
+                            tmp.append(base_field.fetch_int(int(str(h))) * base_field.fetch_int(int(str(multiplier))))
+                        tmp.sort()
                         self._sub_group[i] = tmp
 
                 self._parition_size.append(int(length /(locality[i] + local_minimum_distance[i] - 1)))
@@ -140,19 +143,22 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
             F = GF(p**i, repr="int")
             for elm in F:
                 tmp.append(F.fetch_int(int(str(elm))))
-            additive_subgroups[F.cardinality()] = tmp
+
+            tmp.sort()
+            additive_subgroups[len(tmp)] = tmp
 
         return additive_subgroups
 
     def _list_sub_group_cosets(self, sub_group, sub_group_type):
+        F = self.base_field()
         h_cosets = []
         for g in self._base_mult_group:
             tmp = []
             for h in sub_group:
                 if (sub_group_type == "mult"):
-                    tmp.append(h * g)
+                    tmp.append(F.fetch_int(int(str(h))) * F.fetch_int(int(str(g))))
                 elif (sub_group_type == "add"):
-                    tmp.append(h + g)
+                    tmp.append(F.fetch_int(int(str(h))) + F.fetch_int(int(str(g))))
             tmp.sort()
             h_cosets.append(tmp)
 

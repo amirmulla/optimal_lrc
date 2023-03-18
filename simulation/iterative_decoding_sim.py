@@ -11,12 +11,12 @@ import csv
 
 print_log = True
 
-q = 16  # Field size
-n = 15  # Code dimension
-k = 8  # Information/message dimension
-r = [1, 3]  # Locality of the code
+q = 256  # Field size
+n = 256  # Code dimension
+k = 230  # Information/message dimension
+r = [14, 14]  # Locality of the code
 local_minimum_distance = [3, 3]  # correct one error
-sub_group_type = ["mult", "mult"]
+sub_group_type = ["add", "add"]
 max_num_of_itr = 10
 
 # Puncture code
@@ -110,6 +110,8 @@ sim_itr = 1000
 print_freq = int(sim_itr/4)
 
 writer.writerow(["Num_of_error_symbols", "average_num_of_iteration","probability_of_success"])
+
+exit()
 
 for n_err in range(1, max_num_of_err):
     print("Error Weight: ", n_err)
