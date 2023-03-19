@@ -13,14 +13,14 @@ print_log = True
 
 q = 256  # Field size
 n = 256  # Code dimension
-k = 230  # Information/message dimension
-r = [14, 14]  # Locality of the code
+k = 220  # Information/message dimension
+r = [2, 15]  # Locality of the code
 local_minimum_distance = [3, 3]  # correct one error
-sub_group_type = ["add", "add"]
+sub_group_type = ["add", "mult"]
 max_num_of_itr = 10
 
-# Puncture code
-puncture = False
+# Shorten code
+shorten = True
 
 # GF
 F = GF(q, repr='int')
@@ -119,7 +119,7 @@ for n_err in range(1, max_num_of_err):
 
     for i in range(0, sim_itr):
         r = Chan.transmit(c)
-        if puncture:
+        if shorten:
             r[0] = c[0]
 
         e = r - c
