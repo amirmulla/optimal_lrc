@@ -268,6 +268,15 @@ class TamoBergVectorEncoder(Encoder):
         comb_enc_basis.sort()
         return comb_enc_basis
 
+    def enc_basis_ext(self):
+        return self._enc_basis
+
+    def enc_algebra_basis(self):
+        return self._algebra_basis
+
+    def enc_good_poly(self):
+        return self._good_poly
+
     def enc_basis(self):
         return self._comb_enc_basis
 

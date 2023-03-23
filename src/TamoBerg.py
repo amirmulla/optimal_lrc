@@ -97,14 +97,15 @@ class TamoBergCode(AbstractLinearCode):
         return additive_subgroups
 
     def _list_sub_group_cosets(self):
+        F = self.base_field()
         h_cosets = []
         for g in self._base_mult_group:
             tmp = []
             for h in self._sub_group:
                 if (self._sub_group_type == "mult"):
-                    tmp.append(h * g)
+                    tmp.append(F.fetch_int(int(str(h))) * F.fetch_int(int(str(g))))
                 elif (self._sub_group_type == "add"):
-                    tmp.append(h + g)
+                    tmp.append(F.fetch_int(int(str(h))) + F.fetch_int(int(str(g))))
             tmp.sort()
             h_cosets.append(tmp)
 
