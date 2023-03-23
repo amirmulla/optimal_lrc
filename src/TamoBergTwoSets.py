@@ -84,7 +84,7 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
                         print("Possible Add Subgroups: ", self._add_sub_groups)
 
                     # shift group to get the second add subgroup that intersect only at zero
-                    if ((i == 1) & (self._locality[0] == self._locality[1]) & (self._sub_group_type[0] == self._sub_group_type[1])):
+                    if ((i == 1) & (self._sub_group_type[0] == self._sub_group_type[1])):
                         a = base_field.primitive_element()
                         multiplier = (a**log(len(self._sub_group[0]),2))
                         tmp = []
