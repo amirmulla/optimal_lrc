@@ -156,10 +156,8 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
             tmp = []
             for h in sub_group:
                 if (sub_group_type == "mult"):
-                    #tmp.append(F.fetch_int(int(str(h))) * F.fetch_int(int(str(g))))
                     tmp.append(h * g)
                 elif (sub_group_type == "add"):
-                    #tmp.append(F.fetch_int(int(str(h))) + F.fetch_int(int(str(g))))
                     tmp.append(h + g)
             tmp.sort()
             h_cosets.append(tmp)
