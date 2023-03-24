@@ -50,6 +50,24 @@ Dec = C.decoder("IterativeDecoder", max_num_of_itr)
 Enc = C.encoder()
 c = Enc.encode(message)
 
+print("######## Encoder Debug ##########")
+
+enc_basis = Enc.enc_basis_ext()
+enc_algebra_basis = Enc.enc_algebra_basis()
+enc_good_poly = Enc.enc_good_poly()
+enc_comb_enc_basis = Enc.enc_basis()
+
+print("enc_good_poly: ", enc_good_poly[0])
+print("enc_algebra_basis: ", enc_algebra_basis[0])
+print("enc_basis: ", enc_basis[0])
+print("---------------------------------------")
+print("enc_good_poly: ", enc_good_poly[1])
+print("enc_algebra_basis: ", enc_algebra_basis[1])
+print("enc_basis: ", enc_basis[1])
+print("---------------------------------------")
+print("enc_comb_enc_basis: ", enc_comb_enc_basis)
+
+
 partitions, _ = C.partition()
 evalpts = C.evaluation_points()
 

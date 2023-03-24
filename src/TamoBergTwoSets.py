@@ -231,9 +231,13 @@ class TamoBergVectorEncoder(Encoder):
         if (sub_group_type == "mult"):
             good_poly = x**len(sub_group)
         else:
-            good_poly = 1
+            good_poly = S.one()
             for h in sub_group:
                 good_poly = good_poly * (x - h)
+
+        print(S)
+        print(sub_group)
+        print(good_poly)
 
         return good_poly
 

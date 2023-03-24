@@ -86,13 +86,13 @@ class TamoBergCode(AbstractLinearCode):
 
     def _list_add_subgroups(self):
         additive_subgroups = {}
-        p = self.base_field().characteristic()
-        for i in range(1, self.base_field().degree()):
+        F = self.base_field()
+        p = F.characteristic()
+        for i in range(1, F.degree()):
             tmp = []
-            F = GF(p**i, repr="int")
-            for elm in F:
+            Sub_F = GF(p**i, name="a", repr="int")
+            for elm in Sub_F:
                 tmp.append(F.fetch_int(int(str(elm))))
-
             tmp.sort()
             additive_subgroups[len(tmp)] = tmp
 
@@ -151,7 +151,7 @@ class TamoBergVectorEncoder(Encoder):
         self._max_dimension = len(self._enc_basis)
         if(code.dimension() > self._max_dimension):
             raise ValueError("code dimension is too big. maximum code dimension: ", self._max_dimension)
-        
+
         super().__init__(code)
 
     def _repr_(self):
@@ -169,9 +169,13 @@ class TamoBergVectorEncoder(Encoder):
         if (sub_group_type == "mult"):
             good_poly = x**len(sub_group)
         else:
-            good_poly = 1
+            good_poly = S.one()
             for h in sub_group:
                 good_poly = good_poly * (x - h)
+
+        print(S)
+        print(sub_group)
+        print(good_poly)
 
         return good_poly
 
@@ -198,6 +202,12 @@ class TamoBergVectorEncoder(Encoder):
 
     def enc_poly(self):
         return self._enc_poly
+
+    def enc_algebra_basis(self):
+        return self._algebra_basis
+
+    def enc_good_poly(self):
+        return self._good_poly
 
     @cached_method
     def generator_matrix(self):

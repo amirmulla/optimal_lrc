@@ -9,13 +9,13 @@ from TamoBerg import *
 q = 16  # Field size
 n = 16  # Code dimension
 k = 12  # Information/message dimension
-r = 3  # Locality of the code
+r = 7  # Locality of the code
 local_minimum_distance = 2  # correctable erasures
 
 n_err, n_era = 0, 2
 
 # GF
-F = GF(q, repr='int')
+F = GF(q, name="a", repr='int')
 
 # Message Space
 M = VectorSpace(F, k)
@@ -46,6 +46,18 @@ print("Evaluation points: ", evalpts)
 Dec = C.decoder("ErasureDecoder")
 Enc = C.encoder("VectorEncoder")
 c = Enc.encode(message)
+
+print("######## Encoder Debug ##########")
+
+enc_basis = Enc.enc_basis()
+enc_algebra_basis = Enc.enc_algebra_basis()
+enc_good_poly = Enc.enc_good_poly()
+
+print("enc_good_poly: ", enc_good_poly)
+print("enc_algebra_basis: ", enc_algebra_basis)
+print("enc_basis: ", enc_basis)
+print("---------------------------------------")
+
 
 Chan = ErrorErasureChannel(V, n_err, n_era)
 
