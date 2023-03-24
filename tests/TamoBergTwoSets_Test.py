@@ -6,17 +6,17 @@ from sage.all import *
 from TamoBergTwoSets import *
 from sage.coding.channel import StaticErrorRateChannel
 
-q = 64  # Field size
-n = 64  # Code dimension
+q = 16  # Field size
+n = 16  # Code dimension
 k = 2 # Information/message dimension
-r = [2, 6]  # Locality of the code
+r = [2, 2]  # Locality of the code
 local_minimum_distance = [3, 3]  # correct one error
 sub_group_type = ["add", "add"]
 n_err = 1
 max_num_of_itr = 10
 
 # GF
-F = GF(q, repr='int')
+F = GF(q, name="a", repr='int')
 
 # Code space
 V = VectorSpace(F, n)

@@ -89,7 +89,7 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
                         multiplier = (a**log(len(self._sub_group[0]),2))
                         tmp = []
                         for h in self._sub_group[i]:
-                            tmp.append(base_field.fetch_int(int(str(h))) * base_field.fetch_int(int(str(multiplier))))
+                            tmp.append(h * multiplier)
                         tmp.sort()
                         self._sub_group[i] = tmp
 
@@ -137,13 +137,13 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
 
     def _list_add_subgroups(self):
         additive_subgroups = {}
-        p = self.base_field().characteristic()
-        for i in range(1, self.base_field().degree()):
+        F = self.base_field()
+        p = F.characteristic()
+        for i in range(1, F.degree()):
             tmp = []
-            F = GF(p**i, repr="int")
-            for elm in F:
+            Sub_F = GF(p**i, name="a", repr="int")
+            for elm in Sub_F:
                 tmp.append(F.fetch_int(int(str(elm))))
-
             tmp.sort()
             additive_subgroups[len(tmp)] = tmp
 
@@ -156,9 +156,11 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
             tmp = []
             for h in sub_group:
                 if (sub_group_type == "mult"):
-                    tmp.append(F.fetch_int(int(str(h))) * F.fetch_int(int(str(g))))
+                    #tmp.append(F.fetch_int(int(str(h))) * F.fetch_int(int(str(g))))
+                    tmp.append(h * g)
                 elif (sub_group_type == "add"):
-                    tmp.append(F.fetch_int(int(str(h))) + F.fetch_int(int(str(g))))
+                    #tmp.append(F.fetch_int(int(str(h))) + F.fetch_int(int(str(g))))
+                    tmp.append(h + g)
             tmp.sort()
             h_cosets.append(tmp)
 
@@ -344,7 +346,6 @@ class TamoBergIterariveDecoder(Decoder):
                         uncorrectable_err[i] = True
                         corr_c = vector(F, r_list)
 
-                    # print(uncorrectable_err[i])
                     r_list = list(corr_c)
 
                     # Fix error in r
