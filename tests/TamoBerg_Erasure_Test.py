@@ -8,7 +8,7 @@ from TamoBerg import *
 
 q = 16  # Field size
 n = 16  # Code dimension
-k = 8  # Information/message dimension
+k = 12  # Information/message dimension
 r = 3  # Locality of the code
 local_minimum_distance = 2  # correctable erasures
 
@@ -25,7 +25,7 @@ message = M.random_element()
 # Code space
 V = VectorSpace(F, n)
 
-C = TamoBergCode(F, n, k, r, local_minimum_distance)
+C = TamoBergCode(F, n, k, r, local_minimum_distance, sub_group_type="add")
 
 sub_group, sub_group_type = C.sub_group()
 partitions, _ = C.partition()
@@ -43,8 +43,8 @@ print("Subgroup Size: ", len(sub_group))
 print("Partition: ", partitions)
 print("Evaluation points: ", evalpts)
 
-Dec = C.decoder()
-Enc = C.encoder()
+Dec = C.decoder("ErasureDecoder")
+Enc = C.encoder("VectorEncoder")
 c = Enc.encode(message)
 
 Chan = ErrorErasureChannel(V, n_err, n_era)

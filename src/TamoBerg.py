@@ -92,7 +92,9 @@ class TamoBergCode(AbstractLinearCode):
             F = GF(p**i, repr="int")
             for elm in F:
                 tmp.append(F.fetch_int(int(str(elm))))
-            additive_subgroups[F.cardinality()] = tmp
+
+            tmp.sort()
+            additive_subgroups[len(tmp)] = tmp
 
         return additive_subgroups
 
@@ -103,9 +105,9 @@ class TamoBergCode(AbstractLinearCode):
             tmp = []
             for h in self._sub_group:
                 if (self._sub_group_type == "mult"):
-                    tmp.append(F.fetch_int(int(str(h))) * F.fetch_int(int(str(g))))
+                    tmp.append(h * g)
                 elif (self._sub_group_type == "add"):
-                    tmp.append(F.fetch_int(int(str(h))) + F.fetch_int(int(str(g))))
+                    tmp.append(h + g)
             tmp.sort()
             h_cosets.append(tmp)
 
@@ -140,24 +142,29 @@ class TamoBergVectorEncoder(Encoder):
         self._partition, self._partition_size = code.partition()
         self._sub_group, self._sub_group_type = code.sub_group()
         self._base_poly_ring = PolynomialRing(code.base_field(), 'x')
-        self._annihilator = self.calc_annihilator(code.evaluation_points(), self._base_poly_ring)
+        self._annihilator = self._calc_annihilator(code.evaluation_points(),self._base_poly_ring)
         self._quotient_poly_ring = self._base_poly_ring.quotient(self._annihilator, 'x')
-        self._good_poly = self.calc_good_poly(self._sub_group, self._sub_group_type, self._quotient_poly_ring)
-        self._algebra_basis = self.calc_algebra_basis(self._good_poly, self._partition_size)
-        self._enc_basis = self.calc_enc_basis(self._algebra_basis, code.locality(), self._quotient_poly_ring)
+        self._good_poly = self._calc_good_poly(self._sub_group, self._sub_group_type, self._quotient_poly_ring)
+        self._algebra_basis = self._calc_algebra_basis(self._good_poly, self._partition_size)
+        self._enc_basis = self._calc_enc_basis(self._algebra_basis, code.locality(), self._quotient_poly_ring)
+
+        self._max_dimension = len(self._enc_basis)
+        if(code.dimension() > self._max_dimension):
+            raise ValueError("code dimension is too big. maximum code dimension: ", self._max_dimension)
+        
         super().__init__(code)
 
     def _repr_(self):
         return "Vector Encoder for %s" % self.code()
 
-    def calc_annihilator(self, pts, R):
+    def _calc_annihilator(self, pts, R):
         a = R.gen()
         h = 1
         for p in pts:
             h = h * (a - p)
         return h
 
-    def calc_good_poly(self, sub_group, sub_group_type, S):
+    def _calc_good_poly(self, sub_group, sub_group_type, S):
         x = S.gen()
         if (sub_group_type == "mult"):
             good_poly = x**len(sub_group)
@@ -168,14 +175,14 @@ class TamoBergVectorEncoder(Encoder):
 
         return good_poly
 
-    def calc_algebra_basis(self, good_poly, partition_size):
+    def _calc_algebra_basis(self, good_poly, partition_size):
         algebra_basis = []
         for i in range(0, partition_size):
             algebra_basis.append(good_poly**i)
 
         return algebra_basis
 
-    def calc_enc_basis(self, algebra_basis, r, S):
+    def _calc_enc_basis(self, algebra_basis, r, S):
         x = S.gen()
         enc_basis = []
         for i in range(0, r):
