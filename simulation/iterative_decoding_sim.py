@@ -11,27 +11,43 @@ import csv
 
 print_log = True
 
-q = 256  # Field size
-n = 256  # Code dimension
-k = 220  # Information/message dimension
-r = [2, 15]  # Locality of the code
+q = 31  # Field size
+n = 30  # Code dimension
+k = 12  # Information/message dimension
+r = [3, 4]  # Locality of the code
 local_minimum_distance = [3, 3]  # correct one error
-sub_group_type = ["add", "mult"]
+sub_group_type = ["mult", "mult"]
 max_num_of_itr = 10
 
-# Shorten code
-shorten = True
+# Shorten code in case of different sub-group types.
+if sub_group_type[0] != sub_group_type[1]:
+    shorten = True
+else:
+    shorten = False
+
 
 # GF
 F = GF(q, repr='int')
+
+# Message Space
+M = VectorSpace(F, k)
+# Choose random message
+message = M.random_element()
 
 # Code space
 V = VectorSpace(F, n)
 
 C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type)
 Dec = C.decoder("IterativeDecoder", max_num_of_itr)
-# All zero code word
-c = vector(F, [F.zero()] * n)
+Enc = C.encoder("VectorEncoder")
+
+# Use Encoder or Zero Codeword
+use_enc = False
+
+if use_enc:
+    c = Enc.encode(message)
+else:
+    c = vector(F, [F.zero()] * n) # All Zero CW
 
 sub_group, sub_group_type = C.sub_group()
 partitions, _ = C.partition()
@@ -70,6 +86,7 @@ print("Second Subgroup: ", sub_group[1])
 print("Second Subgroup Type: ", sub_group_type[1])
 print("Second Subgroup Size: ", len(sub_group[1]))
 print("Evaluation Points: ", evalpts)
+print("Codeword : ", c)
 
 # Save to CSV
 writer.writerow(["GF: ", q])
@@ -86,6 +103,7 @@ writer.writerow(["Second Subgroup: ", sub_group[1]])
 writer.writerow(["Second Subgroup Type: ", sub_group_type[1]])
 writer.writerow(["Second Subgroup Size: ", len(sub_group[1])])
 writer.writerow(["Evaluation Points: ", evalpts])
+writer.writerow(["Codeword : ", c])
 
 if print_log:
     print(C, file=log_file_handle)
@@ -103,9 +121,10 @@ if print_log:
     print("Second Subgroup Type: ", sub_group_type[1], file=log_file_handle)
     print("Second Subgroup Size: ", len(sub_group[1]), file=log_file_handle)
     print("Evaluation Points: ", evalpts, file=log_file_handle)
+    print("Codeword : ", c, file=log_file_handle)
 
-max_num_of_err = 32
-sim_itr = 5000
+max_num_of_err = min(k,32)
+sim_itr = 5
 
 print_freq = int(sim_itr/5)
 
