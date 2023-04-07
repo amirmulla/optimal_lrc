@@ -92,7 +92,7 @@ class TamoBergCode(AbstractLinearCode):
             tmp = []
             Sub_F = GF(p**i, name="a", repr="int")
             for elm in Sub_F:
-                tmp.append(F.fetch_int(int(str(elm))))
+                tmp.append(F.from_integer(int(str(elm))))
             tmp.sort()
             additive_subgroups[len(tmp)] = tmp
 
