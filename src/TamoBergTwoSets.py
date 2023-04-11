@@ -206,7 +206,7 @@ class TamoBergVectorEncoder(Encoder):
             self._algebra_basis.append(self._calc_algebra_basis(self._good_poly[i], self._partition_size[i]))
             self._enc_basis.append(self._calc_enc_basis(self._algebra_basis[i], code.locality()[i], self._quotient_poly_ring))
 
-        self._comb_enc_basis = self._calc_combine_enc_basis(self._enc_basis[0], self._enc_basis[1])
+        self._comb_enc_basis = self._calc_combine_enc_basis(self._enc_basis[0], self._enc_basis[1], self._quotient_poly_ring)
 
         self._max_dimension = len(self._comb_enc_basis)
         if(code.dimension() > self._max_dimension):
@@ -254,15 +254,27 @@ class TamoBergVectorEncoder(Encoder):
 
         return enc_basis
 
-    def _calc_combine_enc_basis(self, a_enc_basis, b_enc_basis):
-        a_enc_basis_copy = copy(a_enc_basis)
-        b_enc_basis_copy = copy(b_enc_basis)
+    def _calc_combine_enc_basis(self, a_enc_basis, b_enc_basis, S):
+        F = S.base_ring()
+
+        U1 = matrix(F, [s.list() for s in a_enc_basis]).transpose()
+        U2 = matrix(F, [s.list() for s in b_enc_basis]).transpose()
+        U2 = -U2
+
+        A = copy(U1)
+        A = A.augment(U2)
+        M = A.right_kernel_matrix(basis='computed')
+        E = M.matrix_from_columns(list(range(0, U1.ncols())))
+        T = (E * U1.transpose())
+
+        x = S.gen()
         comb_enc_basis = []
-        for elm in a_enc_basis:
-            if elm in b_enc_basis:
-                comb_enc_basis.append(elm)
-                a_enc_basis_copy.remove(elm)
-                b_enc_basis_copy.remove(elm)
+        for row in T:
+            tmp = S.zero()
+            for i in range(0,len(row)):
+                tmp += row[i] * (x**i)
+            if (tmp != S.zero()):
+                comb_enc_basis.append(tmp)
 
         comb_enc_basis.sort()
         return comb_enc_basis
