@@ -3,6 +3,8 @@ from sage.coding.linear_code import AbstractLinearCode
 from sage.coding.encoder import Encoder
 from sage.coding.decoder import Decoder, DecodingError
 from sage.coding.grs_code import GeneralizedReedSolomonCode
+import networkx as nx
+from networkx.algorithms import *
 
 ####################### code ###############################
 
@@ -109,6 +111,8 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
 
                 self._evaluation_points_idx.append(tmp_a)
 
+            # Create Graph representation
+            self._G, self._G_L, self._G_R = self._create_bipartite_graph()
 
     def __eq__(self, other):
         return isinstance(other, TamoBergCodeTwoSets) and \
@@ -163,6 +167,31 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
             h_cosets.append(tmp)
 
         return list(map(list, set(map(lambda i: tuple(i), h_cosets))))
+
+    def _create_bipartite_graph(self):
+        G = nx.Graph()
+
+        # Add graph nodes
+        k = 0
+        for i in range(0, len(self._partition)):
+            for j in range(0, len(self._partition[i])):
+                G.add_node(k, partition=i, coset=self._partition[i][j], bipartite=i)
+                k += 1
+
+        # Add graph Edges
+        for i in G.nodes():
+            for e in G.nodes[i]["coset"]:
+                for j in G.nodes():
+                    if ((e in G.nodes[j]["coset"]) & (i != j)):
+                        G.add_edge(i, j, evalpts=e)
+
+        G_L = {n for n, d in G.nodes(data=True) if d["bipartite"] == 0}
+        G_R = set(G) - G_L
+
+        return G, G_L, G_R
+
+    def bipartite_graph(self):
+        return self._G, self._G_L, self._G_R
 
     def partition(self):
         return self._partition, self._parition_size
