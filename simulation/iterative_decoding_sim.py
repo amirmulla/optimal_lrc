@@ -21,10 +21,10 @@ print_freq_factor = 5 # Print frequency
 sim_num_of_err = 3 # Number of error to simulate
 
 q = 256  # Field size
-n = 255  # Code dimension
-r = [1, 3]  # Locality of the code
+n = 256  # Code dimension
+r = [14, 3]  # Locality of the code
 local_minimum_distance = [3, 3]  # correct one error
-sub_group_type = ["mult", "mult"]
+sub_group_type = ["add", "mult"]
 max_num_of_itr = 10
 
 # Shorten code in case of different sub-group types.
