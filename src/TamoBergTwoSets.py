@@ -115,6 +115,9 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
             # Create Graph representation
             self._G, self._G_L, self._G_R = self._create_bipartite_graph()
 
+            if(self.dimension() > self.max_dimension()):
+                raise ValueError("code dimension is too big. maximum code dimension: ", self.max_dimension())
+
     def __eq__(self, other):
         return isinstance(other, TamoBergCodeTwoSets) and \
             self.length() == other.length() and \
@@ -220,6 +223,13 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
                 max_degree = poly.lift().degree()
         return (self.length() - max_degree)
 
+
+    def max_dimension(self):
+        Enc = self.encoder()
+        return Enc.max_dimension()
+
+    def max_rate(self):
+        return self.max_dimension() / self.length()
 
     def local_minimum_distance(self):
         return self._local_minimum_distance
@@ -345,6 +355,9 @@ class TamoBergVectorEncoder(Encoder):
 
     def enc_poly(self):
         return self._enc_poly
+
+    def max_dimension(self):
+        return self._max_dimension
 
     @cached_method
     def generator_matrix(self):
@@ -473,7 +486,7 @@ class TamoBergIterariveEEDecoder(Decoder):
                         erasure_vector_list.append(erasure_vector[evalpts_idx[i][j][k]])
                         if print_log:
                             orig_c_list.append(orig_c[evalpts_idx[i][j][k]])
-                        
+
 
                     word_and_erasure_vector = vector(F, r_list), vector(GF(2), erasure_vector_list)
 

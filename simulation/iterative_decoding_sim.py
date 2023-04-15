@@ -12,12 +12,17 @@ from networkx.algorithms import bipartite
 from networkx.algorithms import *
 import csv
 
-print_log = True
+# Simulation Control
+print_log = True # Save log into file
+use_erasure_decoder = False 
+use_enc = True
+sim_itr = 5 # Statistical Accuracy
+print_freq_factor = 5 # Print frequency
+sim_num_of_err = 3 # Number of error to simulate
 
-q = 31  # Field size
-n = 30  # Code dimension
-k = 12  # Information/message dimension
-r = [3, 4]  # Locality of the code
+q = 256  # Field size
+n = 255  # Code dimension
+r = [1, 3]  # Locality of the code
 local_minimum_distance = [3, 3]  # correct one error
 sub_group_type = ["mult", "mult"]
 max_num_of_itr = 10
@@ -28,9 +33,12 @@ if sub_group_type[0] != sub_group_type[1]:
 else:
     shorten = False
 
-
 # GF
 F = GF(q, repr='int')
+
+tmp = TamoBergCodeTwoSets(F, n, 1, r, local_minimum_distance, sub_group_type)
+k = tmp.max_dimension()  # Code Dimension set to max possible.
+C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type)
 
 # Message Space
 M = VectorSpace(F, k)
@@ -40,10 +48,6 @@ message = M.random_element()
 # Code space
 V = VectorSpace(F, n)
 
-C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type)
-
-use_erasure_decoder = False
-
 if use_erasure_decoder:
     Dec = C.decoder("IterativeErasureErrorDecoder", max_num_of_itr)
 else:
@@ -52,13 +56,10 @@ else:
 Enc = C.encoder("VectorEncoder")
 
 # Use Encoder or Zero Codeword
-use_enc = True
-
 if use_enc:
     c = Enc.encode(message)
 else:
-    c = vector(F, [F.zero()] * n) # All Zero CW
-
+    c = vector(F, [F.zero()] * n)  # All Zero CW
 
 sub_group, sub_group_type = C.sub_group()
 partitions, _ = C.partition()
@@ -97,10 +98,12 @@ print(C)
 print("GF: ", q)
 print("Code dim n: ", n)
 print("Message dim k: ", k)
+print("k_max: ", C.max_dimension())
+print("max rate: ", C.max_rate())
 print("Locality r1: ", r[0])
 print("Locality r2: ", r[1])
 print("Local Minimum distance d1: ", local_minimum_distance[0])
-print("Local Minimum distance d2: ",local_minimum_distance[1])
+print("Local Minimum distance d2: ", local_minimum_distance[1])
 print("Design Distance: ", C.design_distance())
 print("First Subgroup: ", sub_group[0])
 print("First Subgroup Type: ", sub_group_type[0])
@@ -118,6 +121,8 @@ print("Codeword : ", c)
 writer.writerow(["GF: ", q])
 writer.writerow(["Code dim n: ", n])
 writer.writerow(["Message dim k: ", k])
+writer.writerow(["k_max: ", C.max_dimension()])
+writer.writerow(["max rate: ", C.max_rate()])
 writer.writerow(["Locality r1: ", r[0]])
 writer.writerow(["Locality r2: ", r[1]])
 writer.writerow(["Local Minimum distance d1: ", local_minimum_distance[0]])
@@ -131,8 +136,8 @@ writer.writerow(["Second Subgroup Type: ", sub_group_type[1]])
 writer.writerow(["Second Subgroup Size: ", len(sub_group[1])])
 writer.writerow(["Evaluation Points: ", evalpts])
 writer.writerow(["Partitions Graph is Connected:", nx.is_connected(G)])
-writer.writerow(["Number of disjoint subgraphs:", nx.number_connected_components(G)])
-writer.writerow(["Partitions Graph Edge Expansion:", cuts.edge_expansion(G, G_R)])
+writer.writerow(["Number of disjoint subgraphs:",nx.number_connected_components(G)])
+writer.writerow(["Partitions Graph Edge Expansion:",cuts.edge_expansion(G, G_R)])
 writer.writerow(["Codeword : ", c])
 
 # Save Graph Picture
@@ -143,10 +148,12 @@ if print_log:
     print("GF: ", q, file=log_file_handle)
     print("Code dim n: ", n, file=log_file_handle)
     print("Message dim k: ", k, file=log_file_handle)
+    print("k_max: ", C.max_dimension(), file=log_file_handle)
+    print("max rate: ", C.max_rate(), file=log_file_handle)
     print("Locality r1: ", r[0], file=log_file_handle)
     print("Locality r2: ", r[1], file=log_file_handle)
     print("Local Minimum distance d1: ", local_minimum_distance[0], file=log_file_handle)
-    print("Local Minimum distance d2: ",local_minimum_distance[1], file=log_file_handle)
+    print("Local Minimum distance d2: ", local_minimum_distance[1], file=log_file_handle)
     print("Design Distance: ", C.design_distance(), file=log_file_handle)
     print("First Subgroup: ", sub_group[0], file=log_file_handle)
     print("First Subgroup Type: ", sub_group_type[0], file=log_file_handle)
@@ -160,10 +167,8 @@ if print_log:
     print("Partitions Graph Edge Expansion:", cuts.edge_expansion(G, G_R), file=log_file_handle)
     print("Codeword : ", c, file=log_file_handle)
 
-max_num_of_err = min(k,3)
-sim_itr = 5
-
-print_freq = int(sim_itr/5)
+max_num_of_err = min(k, sim_num_of_err)
+print_freq = int(sim_itr / print_freq_factor)
 
 writer.writerow(["Num_of_error_symbols", "average_num_of_iteration","probability_of_success"])
 
@@ -193,8 +198,8 @@ for n_err in range(1, max_num_of_err):
         else:
             success = False
 
-        if (i+1) % print_freq == 0:
-            print("Iteration ", i+1, "/", sim_itr," Done.")
+        if (i + 1) % print_freq == 0:
+            print("Iteration ", i + 1, "/", sim_itr, " Done.")
 
     if success_itr != 0:
         avg_num_of_itr = (overall_num_itr / success_itr)
@@ -205,10 +210,15 @@ for n_err in range(1, max_num_of_err):
 
     if print_log:
         print("Num of error symbols: ", n_err, file=log_file_handle)
-        print("Average Num of Iteration: ", avg_num_of_itr,file=log_file_handle)
-        print("Probability of Success: ",100 * (success_itr / sim_itr),file=log_file_handle)
+        print("Average Num of Iteration: ",
+              avg_num_of_itr,
+              file=log_file_handle)
+        print("Probability of Success: ",
+              100 * (success_itr / sim_itr),
+              file=log_file_handle)
         print("##########################", file=log_file_handle)
 
 print("## Simulation Done ##")
+
 log_file_handle.close()
 res_file_handle.close()
