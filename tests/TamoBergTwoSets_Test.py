@@ -6,10 +6,10 @@ from sage.all import *
 from TamoBergTwoSets import *
 from sage.coding.channel import StaticErrorRateChannel
 
-q = 256  # Field size
-n = 255  # Code dimension
-k = 135 # Information/message dimension
-r = [15, 3]  # Locality of the code
+q = 16  # Field size
+n = 15  # Code dimension
+k = 3 # Information/message dimension
+r = [3, 1]  # Locality of the code
 local_minimum_distance = [3, 3]  # correct one error
 sub_group_type = ["mult", "mult"]
 n_err = 1

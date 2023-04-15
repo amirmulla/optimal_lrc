@@ -173,10 +173,6 @@ class TamoBergVectorEncoder(Encoder):
             for h in sub_group:
                 good_poly = good_poly * (x - h)
 
-        print(S)
-        print(sub_group)
-        print(good_poly)
-
         return good_poly
 
     def _calc_algebra_basis(self, good_poly, partition_size):

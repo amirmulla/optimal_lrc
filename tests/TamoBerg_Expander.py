@@ -15,10 +15,10 @@ from sage.coding.channel import StaticErrorRateChannel
 
 #set_random_seed(100)
 
-q = 32  # Field size
-n = 32  # Code dimension
+q = 64  # Field size
+n = 64  # Code dimension
 k = 12  # Information/message dimension
-r = [2, 2]  # Locality of the code
+r = [6, 6]  # Locality of the code
 local_minimum_distance = [3, 3]  # correct one error
 sub_group_type = ["add", "add"]
 n_err = 8
@@ -37,6 +37,7 @@ message = M.random_element()
 #message = zero_vector(F,k)
 
 C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type)
+
 print(C)
 sub_group, sub_group_type = C.sub_group()
 partitions, _ = C.partition()
@@ -52,7 +53,7 @@ print("edge_expansion:", cuts.edge_expansion(G, G_R))
 
 aux_graph = EdgeComponentAuxGraph.construct(G)
 l_subgraphs = sorted(map(sorted, aux_graph.k_edge_components(k=1)))
-x = set(l_subgraphs[1])
+#x = set(l_subgraphs[1])
 
 m, n = len(G_L), len(G_R)
 pos = dict()

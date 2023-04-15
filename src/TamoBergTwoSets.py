@@ -88,7 +88,8 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
                     # shift group to get the second add subgroup that intersect only at zero
                     if ((i == 1) & (self._sub_group_type[0] == self._sub_group_type[1])):
                         a = base_field.primitive_element()
-                        multiplier = (a**log(len(self._sub_group[0]),2))
+                        p = base_field.characteristic()
+                        multiplier = (a**log(len(self._sub_group[0]),p))
                         tmp = []
                         for h in self._sub_group[i]:
                             tmp.append(h * multiplier)
@@ -341,9 +342,8 @@ class TamoBergVectorEncoder(Encoder):
 ###### TamoBergIterariveDecoder #######
 class TamoBergIterariveDecoder(Decoder):
 
-    def __init__(self, code, max_num_of_itr=2):
-        input_space = cartesian_product([code.ambient_space(), VectorSpace(GF(2), code.ambient_space().dimension())])
-        super().__init__(code, input_space, "VectorEncoder")
+    def __init__(self, code, max_num_of_itr=10):
+        super().__init__(code, code.ambient_space(),"VectorEncoder")
         self._max_num_of_itr = max_num_of_itr
 
     def _repr_(self):
@@ -403,9 +403,8 @@ class TamoBergIterariveDecoder(Decoder):
 ###### Error-and-Erasure Iterarive Decoder #######
 class TamoBergIterariveEEDecoder(Decoder):
 
-    def __init__(self, code, max_num_of_itr=2):
-        input_space = cartesian_product([code.ambient_space(), VectorSpace(GF(2), code.ambient_space().dimension())])
-        super().__init__(code, input_space, "VectorEncoder")
+    def __init__(self, code, max_num_of_itr=10):
+        super().__init__(code, code.ambient_space(), "VectorEncoder")
         self._max_num_of_itr = max_num_of_itr
 
     def _repr_(self):
@@ -525,8 +524,6 @@ class TamoBergIterariveEEDecoder(Decoder):
                     print("Error         :", r-orig_c)
 
         return r, num_itr
-
-
 
 
 ####################### registration ###############################
