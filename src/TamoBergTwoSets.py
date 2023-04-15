@@ -212,11 +212,30 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
     def num_of_sets(self):
         return self._num_of_sets
 
-    def global_minimum_distance(self):
-        return (self.length() - self.dimension() - ceil(self.dimension() / self.locality()) + 2)
+    def design_distance(self):
+        Enc = self.encoder()
+        max_degree = 0
+        for poly in Enc.enc_basis():
+            if(poly.lift().degree() > max_degree):
+                max_degree = poly.lift().degree()
+        return (self.length() - max_degree)
+
 
     def local_minimum_distance(self):
         return self._local_minimum_distance
+
+    def minimum_distance(self):
+        G = self.generator_matrix()
+        M = VectorSpace(self.base_field(), self.dimension())
+        zero_vector = vector(self.base_field(),[self.base_field().zero()] * self.length())
+        d = self.length()
+        for m in M:
+            c = m*G
+            if (c != zero_vector):
+                if (c.hamming_weight() < d):
+                    d = c.hamming_weight()
+
+        return d
 
 
 ####################### encoders ###############################

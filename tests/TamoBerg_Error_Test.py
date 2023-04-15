@@ -9,11 +9,11 @@ from sage.coding.channel import StaticErrorRateChannel
 # LRC Parameters
 q = 16  # Field size
 n = 16  # Code dimension
-k = 5  # Information dimension
-r = 2  # Locality of the code
-local_minimum_distance = 3  # Correctable erasures
+k = 3  # Information dimension
+r = 7  # Locality of the code
+local_minimum_distance = 2  # Correctable erasures
 
-n_err = 2
+n_err = 1
 
 print("GF: ", q)
 print("Code dim n: ", n)
@@ -33,6 +33,9 @@ message = M.random_element()
 V = VectorSpace(F, n)
 
 C = TamoBergCode(F, n, k, r, local_minimum_distance)
+
+print("Minimum distance d: ", C.minimum_distance())
+
 Dec = C.decoder("ErrorDecoder")
 Enc = C.encoder()
 c = Enc.encode(message)

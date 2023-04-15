@@ -125,9 +125,8 @@ class TamoBergCode(AbstractLinearCode):
     def locality(self):
         return self._locality
 
-    def global_minimum_distance(self):
-        return (self.length() - self.dimension() -
-                ceil(self.dimension() / self.locality()) + 2)
+    def minimum_distance(self):
+        return (self.length() - self.dimension() + 1 - ((ceil(self.dimension() / self.locality())-1)*(self._local_minimum_distance-1)))
 
     def local_minimum_distance(self):
         return self._local_minimum_distance

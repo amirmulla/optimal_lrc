@@ -6,12 +6,12 @@ from sage.all import *
 from TamoBergTwoSets import *
 from sage.coding.channel import StaticErrorRateChannel
 
-q = 16  # Field size
-n = 15  # Code dimension
-k = 3 # Information/message dimension
-r = [3, 1]  # Locality of the code
+q = 256  # Field size
+n = 256  # Code dimension
+k = 38 # Information/message dimension
+r = [14, 3]  # Locality of the code
 local_minimum_distance = [3, 3]  # correct one error
-sub_group_type = ["mult", "mult"]
+sub_group_type = ["add", "mult"]
 n_err = 1
 max_num_of_itr = 10
 
@@ -27,7 +27,7 @@ M = VectorSpace(F, k)
 message = M.random_element()
 
 C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type)
-print(C)
+
 sub_group, sub_group_type = C.sub_group()
 partitions, _ = C.partition()
 
@@ -38,6 +38,7 @@ print("Locality r1: ", r[0])
 print("Locality r2: ", r[1])
 print("Local Minimum distance d1: ", local_minimum_distance[0])
 print("Local Minimum distance d2: ", local_minimum_distance[1])
+print("Design Distance: ", C.design_distance())
 print("First Subgroup: ", sub_group[0])
 print("First Subgroup Type: ", sub_group_type[0])
 print("First Subgroup Size: ", len(sub_group[0]))
