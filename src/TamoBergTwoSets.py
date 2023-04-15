@@ -429,7 +429,7 @@ class TamoBergIterariveEEDecoder(Decoder):
     def _repr_(self):
         return "Iterative Decoder Error-and-Erasure for %s" % self.code()
 
-    def decode_to_code(self, r, orig_c):
+    def decode_to_code(self, r, orig_c=0):
         print_log = False
         C = self.code()
         F = C.base_field()
@@ -470,9 +470,10 @@ class TamoBergIterariveEEDecoder(Decoder):
                     erasure_vector_list = []
                     for k in range(0,len(coset)):
                         r_list.append(r[evalpts_idx[i][j][k]])
-                        orig_c_list.append(orig_c[evalpts_idx[i][j][k]])
                         erasure_vector_list.append(erasure_vector[evalpts_idx[i][j][k]])
-
+                        if print_log:
+                            orig_c_list.append(orig_c[evalpts_idx[i][j][k]])
+                        
 
                     word_and_erasure_vector = vector(F, r_list), vector(GF(2), erasure_vector_list)
 

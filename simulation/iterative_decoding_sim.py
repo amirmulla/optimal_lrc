@@ -41,7 +41,14 @@ message = M.random_element()
 V = VectorSpace(F, n)
 
 C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type)
-Dec = C.decoder("IterativeDecoder", max_num_of_itr)
+
+use_erasure_decoder = False
+
+if use_erasure_decoder:
+    Dec = C.decoder("IterativeErasureErrorDecoder", max_num_of_itr)
+else:
+    Dec = C.decoder("IterativeDecoder", max_num_of_itr)
+
 Enc = C.encoder("VectorEncoder")
 
 # Use Encoder or Zero Codeword
@@ -150,7 +157,7 @@ if print_log:
     print("Evaluation Points: ", evalpts, file=log_file_handle)
     print("Partitions Graph is Connected:", nx.is_connected(G), file=log_file_handle)
     print("Number of disjoint subgraphs:", nx.number_connected_components(G), file=log_file_handle)
-    print("Partitions Graph Edge Expansion:", cuts.edge_expansion(G, G_R), file=log_file_handle)  
+    print("Partitions Graph Edge Expansion:", cuts.edge_expansion(G, G_R), file=log_file_handle)
     print("Codeword : ", c, file=log_file_handle)
 
 max_num_of_err = min(k,3)
