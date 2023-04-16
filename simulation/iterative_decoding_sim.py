@@ -67,10 +67,10 @@ evalpts = C.evaluation_points()
 
 ## Bipartite Graph
 G, G_L, G_R = C.bipartite_graph()
-m, n = len(G_L), len(G_R)
+left, right = len(G_L), len(G_R)
 pos = dict()
-pos.update((i, (i - m / 2, 1)) for i in range(m))
-pos.update((i, (i - m - n / 2, 0)) for i in range(m, m + n))
+pos.update((i, (i - left / 2, 1)) for i in range(left))
+pos.update((i, (i - left - right / 2, 0)) for i in range(left, left + right))
 nx.draw(G, with_labels=True, pos=pos, node_size=300, width=0.4)
 
 ## Simulation name and directory
