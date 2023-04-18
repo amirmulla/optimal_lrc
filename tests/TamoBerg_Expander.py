@@ -51,14 +51,17 @@ pos = dict()
 pos.update((i, (i - m / 2, 1)) for i in range(m))
 pos.update((i, (i - m - n / 2, 0)) for i in range(m, m + n))
 nx.draw(G, with_labels=True, pos=pos, node_size=300, width=0.4)
-plt.savefig('graph.png')
+#plt.savefig('graph.png')
 
 
 
 print(nx.is_connected(G))
-#k = nx.number_connected_components(G)
+k = nx.number_connected_components(G)
 print("edge_expansion:", cuts.edge_expansion(G, G_R))
 
-#aux_graph = EdgeComponentAuxGraph.construct(G)
-#l_subgraphs = sorted(map(sorted, aux_graph.k_edge_components(k=1)))
-#x = set(l_subgraphs[1])
+aux_graph = EdgeComponentAuxGraph.construct(G)
+l_subgraphs = sorted(map(sorted, aux_graph.k_edge_components(k=1)))
+x = set(l_subgraphs[1])
+
+nx.draw(G, with_labels=True, pos=pos, node_size=300, width=0.4)
+plt.plot()

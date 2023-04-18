@@ -170,7 +170,7 @@ if print_log:
     print("Partitions Graph Edge Expansion:", cuts.edge_expansion(G, G_R), file=log_file_handle)
     print("Codeword : ", c, file=log_file_handle)
 
-max_num_of_err = min(k, sim_num_of_err)
+max_num_of_err = min(n-k, sim_num_of_err)
 print_freq = int(sim_itr / print_freq_factor)
 
 writer.writerow(["Num_of_error_symbols", "average_num_of_iteration","probability_of_success"])
