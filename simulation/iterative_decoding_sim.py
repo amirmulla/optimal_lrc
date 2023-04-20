@@ -13,8 +13,8 @@ from networkx.algorithms import *
 import csv
 
 # Simulation Control
-print_log = True # Save log into file
-use_erasure_decoder = True 
+print_log = False  # Save log into file
+use_erasure_decoder = False
 use_enc = True
 sim_itr = 5 # Statistical Accuracy
 print_freq_factor = 5 # Print frequency
