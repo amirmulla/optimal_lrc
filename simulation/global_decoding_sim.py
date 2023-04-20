@@ -180,17 +180,17 @@ if print_log:
 max_num_of_err = min(n - k, sim_num_of_err)
 print_freq = int(sim_itr / print_freq_factor)
 
-writer.writerow(["Num_of_error_symbols", "average_num_of_iteration","probability_of_success"])
+writer.writerow(["Num_of_error_symbols", "probability_of_success"])
 err_writer.writerow(["Num_of_error_symbols", "remain_err_weight", "count", "dist"])
 
-
+dd = C.design_distance()
+dd_th = (dd - 1) // 2
 for n_err in range(30, 35):#max_num_of_err):
     print("Error Weight: ", n_err)
     Chan = StaticErrorRateChannel(V, n_err)
     success_itr = 0
     overall_num_itr = 0
-    err_dist = [0]*n
-
+    remain_err_dist = [0]*n
 
     for i in range(0, sim_itr):
         r = Chan.transmit(c)
@@ -208,30 +208,28 @@ for n_err in range(30, 35):#max_num_of_err):
         if (correct_c == c):
             success = True
             success_itr += 1
-            overall_num_itr += num_of_itr
+            remin_err_weight = 0
         else:
-            success = False
+            remin_err_weight = (c - correct_c).hamming_weight()
+            if remin_err_weight <= dd_th: # still can be decoded by global decoding
+                success = True
+                success_itr += 1
+            else:
+                success = False
 
-        err_weight = (c - correct_c).hamming_weight()
-        err_dist[err_weight] += 1
+        remain_err_dist[remin_err_weight] += 1
 
         if (i + 1) % print_freq == 0:
             print("Iteration ", i + 1, "/", sim_itr, " Done.")
 
-    if success_itr != 0:
-        avg_num_of_itr = (overall_num_itr / success_itr)
-    else:
-        avg_num_of_itr = max_num_of_itr
+    writer.writerow([n_err, 100 * (success_itr / sim_itr)])
 
-    writer.writerow([n_err, avg_num_of_itr, 100 * (success_itr / sim_itr)])
-
-    for i in range(0,len(err_dist)):
-        if err_dist[i] != 0:
-            err_writer.writerow([n_err, i, err_dist[i], err_dist[i] / sim_itr])
+    for i in range(0,len(remain_err_dist)):
+        if remain_err_dist[i] != 0:
+            err_writer.writerow([n_err, i, remain_err_dist[i], remain_err_dist[i] / sim_itr])
 
     if print_log:
         print("Num of error symbols: ", n_err, file=log_file_handle)
-        print("Average Num of Iteration: ", avg_num_of_itr, file=log_file_handle)
         print("Probability of Success: ",100 * (success_itr / sim_itr),file=log_file_handle)
         print("##########################", file=log_file_handle)
 
