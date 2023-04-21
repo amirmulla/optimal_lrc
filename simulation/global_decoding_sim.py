@@ -190,7 +190,7 @@ for n_err in range(1,max_num_of_err):
     Chan = StaticErrorRateChannel(V, n_err)
     success_itr = 0
     overall_num_itr = 0
-    remain_err_dist = [0]*n
+    remain_err_dist = [0] * (max_num_of_err + 4)
 
     for i in range(0, sim_itr):
         r = Chan.transmit(c)
