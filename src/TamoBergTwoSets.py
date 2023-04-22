@@ -234,7 +234,7 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
     def local_minimum_distance(self):
         return self._local_minimum_distance
 
-    def minimum_distance(self):
+    def minimum_distance_py(self):
         G = self.generator_matrix()
         M = VectorSpace(self.base_field(), self.dimension())
         zero_vector = vector(self.base_field(),[self.base_field().zero()] * self.length())
