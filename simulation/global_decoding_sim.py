@@ -17,16 +17,22 @@ import csv
 print_log = False  # Save log into file
 use_erasure_decoder = False
 use_enc = False
+use_exact_distance = True
+exact_distance = 45 
 sim_itr = 5000  # Statistical Accuracy
 print_freq_factor = 5  # Print frequency
-sim_num_of_err = 64  # Number of error to simulate
+
+if use_exact_distance:
+    sim_num_of_err = exact_distance + 1
+else:
+    sim_num_of_err = 64  # Number of error to simulate
 
 q = 64  # Field size
 n = 64  # Code Length
-k = 10   # Code Dimension
-r = [2, 4]  # Locality of the code
-local_minimum_distance = [3, 5]  # correct one error
-sub_group_type = ["add", "add"]
+k = 6   # Code Dimension
+r = [4, 3]  # Locality of the code
+local_minimum_distance = [5, 5]  # correct one error
+sub_group_type = ["add", "mult"]
 max_num_of_itr = 10
 
 # Shorten code in case of different sub-group types.
@@ -113,6 +119,9 @@ print("Locality r1: ", r[0])
 print("Locality r2: ", r[1])
 print("Local Minimum distance d1: ", local_minimum_distance[0])
 print("Local Minimum distance d2: ", local_minimum_distance[1])
+if use_exact_distance:
+    print("Code Distance: ", exact_distance)
+
 print("Design Distance: ", C.design_distance())
 print("First Subgroup: ", sub_group[0])
 print("First Subgroup Type: ", sub_group_type[0])
@@ -183,8 +192,13 @@ print_freq = int(sim_itr / print_freq_factor)
 writer.writerow(["Num_of_error_symbols", "probability_of_success"])
 err_writer.writerow(["Num_of_error_symbols", "remain_err_weight", "count", "dist"])
 
-dd = C.design_distance()
+if use_exact_distance:
+    dd = exact_distance
+else:
+    dd = C.design_distance()
+
 dd_th = (dd - 1) // 2
+
 for n_err in range(1,max_num_of_err):
     print("Error Weight: ", n_err)
     Chan = StaticErrorRateChannel(V, n_err)
