@@ -17,22 +17,22 @@ import csv
 print_log = False  # Save log into file
 use_erasure_decoder = False
 use_enc = False
-use_exact_distance = True
-exact_distance = 45 
+use_exact_distance = False
+exact_distance = 256
 sim_itr = 5000  # Statistical Accuracy
 print_freq_factor = 5  # Print frequency
 
 if use_exact_distance:
     sim_num_of_err = exact_distance + 1
 else:
-    sim_num_of_err = 64  # Number of error to simulate
+    sim_num_of_err = 251  # Number of error to simulate
 
-q = 64  # Field size
-n = 64  # Code Length
+q = 256  # Field size
+n = 256  # Code Length
 k = 6   # Code Dimension
-r = [4, 3]  # Locality of the code
-local_minimum_distance = [5, 5]  # correct one error
-sub_group_type = ["add", "mult"]
+r = [2, 4]  # Locality of the code
+local_minimum_distance = [3, 5]  # correct one error
+sub_group_type = ["add", "add"]
 max_num_of_itr = 10
 
 # Shorten code in case of different sub-group types.
@@ -204,7 +204,7 @@ for n_err in range(1,max_num_of_err):
     Chan = StaticErrorRateChannel(V, n_err)
     success_itr = 0
     overall_num_itr = 0
-    remain_err_dist = [0] * (max_num_of_err + 4)
+    remain_err_dist = [0] * (n + 1)
 
     for i in range(0, sim_itr):
         r = Chan.transmit(c)
