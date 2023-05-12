@@ -13,7 +13,7 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
     _registered_encoders = {}
     _registered_decoders = {}
 
-    def __init__(self, base_field, length, dimension, locality, local_minimum_distance=2, sub_group_type="any"):
+    def __init__(self, base_field, length, dimension, locality, local_minimum_distance=2, sub_group_type="any", shift_add=False):
         super().__init__(base_field, length, "VectorEncoder", "IterativeDecoder")
         if not base_field.is_finite():
             raise ValueError("base_field has to be a finite field")
@@ -86,7 +86,7 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
                         print("Possible Add Subgroups: ", self._add_sub_groups)
 
                     # shift group to get the second add subgroup that intersect only at zero
-                    if ((i == 1) & (self._sub_group_type[0] == self._sub_group_type[1])):
+                    if ((i == 1) & (self._sub_group_type[0] == self._sub_group_type[1])) or shift_add:
                         a = base_field.primitive_element()
                         p = base_field.characteristic()
                         multiplier = (a**log(len(self._sub_group[0]),p))
