@@ -80,13 +80,14 @@ st = time.time()
 for i in range(0, num_of_mrs):
     r = Chan.transmit(c)
     e = r - c
-    correct_c, num_of_itr = Dec.decode_to_code(r)
+    correct_c, num_of_itr, num_of_rem_era = Dec.decode_to_code(r)
     if print_log:
         print("Error              : ", e)
         print("Recieved Word      : ", r)
         print("Corrected Codeword : ", correct_c)
         print("Correction Successfull: ", correct_c == c)
         print("Num of Iterations: ", num_of_itr)
+        print("Num of Remaining Erasures: ", num_of_rem_era)
 
 et = time.time()
 elapsed_time = (et - st) * (10 ** 3)

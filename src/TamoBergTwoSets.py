@@ -664,9 +664,7 @@ class TamoBergTwoStepEEDecoder(Decoder):
     def decode_to_code(self, r):
         # First Step - Iterative Decoder
         tmp, num_itr = self._iter_ee_decoder.decode_to_code(r)
-
-        print("step1 resutls:", tmp)
-        print("num of erasures:", tmp[1].hamming_weight())
+        num_of_rem_era = tmp[1].hamming_weight()
 
         # Second Step - Global Decoder
         try:
@@ -674,7 +672,7 @@ class TamoBergTwoStepEEDecoder(Decoder):
         except:
             r = tmp[0]
 
-        return r, num_itr
+        return r, num_itr, num_of_rem_era
 
 
 ####################### registration ###############################
