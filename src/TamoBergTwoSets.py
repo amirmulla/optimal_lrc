@@ -418,11 +418,9 @@ class TamoBergIterariveDecoder(Decoder):
                         uncorrectable_err[i] = True
                         corr_c = vector(self._F, r_list)
 
-                    #r_list = list(corr_c)
-
                     # Fix error in r
                     for l in range(0, len(partition[j])):
-                        r[self._evalpts_idx[i][j][l]] = r_list[l]
+                        r[self._evalpts_idx[i][j][l]] = corr_c[l]
 
             if (uncorrectable_err[0] == False & uncorrectable_err[1] == False):
                 uncorr_err = False
@@ -506,10 +504,9 @@ class TamoBergIterariveEEDecoder(Decoder):
                         for e in err:
                             corr_c[e] = d(coset[e])
 
-                    #r_list = list(corr_c)
                     # Fix error in r
                     for l in range(0,len(coset)):
-                        r[self._evalpts_idx[i][j][l]] = r_list[l]
+                        r[self._evalpts_idx[i][j][l]] = corr_c[l]
 
                 due_status.append(due_tmp)
 
