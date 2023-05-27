@@ -34,35 +34,47 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
         if self._num_of_sets == 1:
             if sub_group_type == "any":
                 try:
-                    self._mult_sub_groups[locality + local_minimum_distance - 1]
-                    self._sub_group = self._mult_sub_groups[locality + local_minimum_distance - 1]
+                    self._mult_sub_groups[locality +
+                                          local_minimum_distance - 1]
+                    self._sub_group = self._mult_sub_groups[locality +
+                                                            local_minimum_distance - 1]
                     self._sub_group_type = "mult"
                 except KeyError:
                     try:
-                        self._add_sub_groups[locality + local_minimum_distance - 1]
-                        self._sub_group = self._add_sub_groups[locality + local_minimum_distance - 1]
+                        self._add_sub_groups[locality +
+                                             local_minimum_distance - 1]
+                        self._sub_group = self._add_sub_groups[locality +
+                                                               local_minimum_distance - 1]
                         self._sub_group_type = "add"
                     except KeyError:
-                        print("Can't find any subgroup of size: ", locality + local_minimum_distance - 1)
+                        print("Can't find any subgroup of size: ",
+                              locality + local_minimum_distance - 1)
 
             elif sub_group_type == "mult":
                 try:
-                    self._mult_sub_groups[locality + local_minimum_distance - 1]
-                    self._sub_group = self._mult_sub_groups[locality + local_minimum_distance - 1]
+                    self._mult_sub_groups[locality +
+                                          local_minimum_distance - 1]
+                    self._sub_group = self._mult_sub_groups[locality +
+                                                            local_minimum_distance - 1]
                     self._sub_group_type = "mult"
                 except KeyError:
-                    print("Can't find mult subgroup of size: ", locality + local_minimum_distance - 1)
+                    print("Can't find mult subgroup of size: ",
+                          locality + local_minimum_distance - 1)
 
             elif sub_group_type == "add":
                 try:
                     self._add_sub_groups[locality + local_minimum_distance - 1]
-                    self._sub_group = self._add_sub_groups[locality + local_minimum_distance - 1]
+                    self._sub_group = self._add_sub_groups[locality +
+                                                           local_minimum_distance - 1]
                     self._sub_group_type = "add"
                 except KeyError:
-                    print("Can't find add subgroup of size: ", locality + local_minimum_distance - 1)
+                    print("Can't find add subgroup of size: ",
+                          locality + local_minimum_distance - 1)
 
-            self._parition_size = int(length/(locality + local_minimum_distance - 1))
-            self._partition = self._list_sub_group_cosets(sub_group=self._sub_group, sub_group_type=self._sub_group_type)[:self._parition_size]
+            self._parition_size = int(
+                length/(locality + local_minimum_distance - 1))
+            self._partition = self._list_sub_group_cosets(
+                sub_group=self._sub_group, sub_group_type=self._sub_group_type)[:self._parition_size]
             self._evaluation_points = flatten(self._partition)
         else:  # Possible combinations of mult and add subgroups
             self._sub_group = []
@@ -73,31 +85,38 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
             for i in range(0, self._num_of_sets):
                 if (self._sub_group_type[i] == "mult"):
                     try:
-                        self._sub_group.append(self._mult_sub_groups[locality[i] + local_minimum_distance[i] - 1])
+                        self._sub_group.append(
+                            self._mult_sub_groups[locality[i] + local_minimum_distance[i] - 1])
                     except:
-                        print("Can't find mult subgroup of size: ", locality[i] + local_minimum_distance[i] - 1)
-                        print("Possible Mult Subgroups: ", self._mult_sub_groups)
+                        print("Can't find mult subgroup of size: ",
+                              locality[i] + local_minimum_distance[i] - 1)
+                        print("Possible Mult Subgroups: ",
+                              self._mult_sub_groups)
 
                 elif (self._sub_group_type[i] == "add"):
                     try:
-                        self._sub_group.append(self._add_sub_groups[locality[i] + local_minimum_distance[i] - 1])
+                        self._sub_group.append(
+                            self._add_sub_groups[locality[i] + local_minimum_distance[i] - 1])
                     except:
-                        print("Can't find add subgroup of size: ", locality[i] + local_minimum_distance[i] - 1)
+                        print("Can't find add subgroup of size: ",
+                              locality[i] + local_minimum_distance[i] - 1)
                         print("Possible Add Subgroups: ", self._add_sub_groups)
 
                     # shift group to get the second add subgroup that intersect only at zero
                     if ((i == 1) & (self._sub_group_type[0] == self._sub_group_type[1])) or shift_add:
                         a = base_field.primitive_element()
                         p = base_field.characteristic()
-                        multiplier = (a**log(len(self._sub_group[0]),p))
+                        multiplier = (a**log(len(self._sub_group[0]), p))
                         tmp = []
                         for h in self._sub_group[i]:
                             tmp.append(h * multiplier)
                         tmp.sort()
                         self._sub_group[i] = tmp
 
-                self._parition_size.append(int(length /(locality[i] + local_minimum_distance[i] - 1)))
-                self._partition.append(self._list_sub_group_cosets(sub_group=self._sub_group[i],sub_group_type=self._sub_group_type[i])[:self._parition_size[i]])
+                self._parition_size.append(
+                    int(length / (locality[i] + local_minimum_distance[i] - 1)))
+                self._partition.append(self._list_sub_group_cosets(
+                    sub_group=self._sub_group[i], sub_group_type=self._sub_group_type[i])[:self._parition_size[i]])
 
             self._evaluation_points = flatten(self._partition[0])
             self._evaluation_points.sort()
@@ -115,8 +134,9 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
             # Create Graph representation
             self._G, self._G_L, self._G_R = self._create_bipartite_graph()
 
-            if(self.dimension() > self.max_dimension()):
-                raise ValueError("code dimension is too big. maximum code dimension: ", self.max_dimension())
+            if (self.dimension() > self.max_dimension()):
+                raise ValueError(
+                    "code dimension is too big. maximum code dimension: ", self.max_dimension())
 
     def __eq__(self, other):
         return isinstance(other, TamoBergCodeTwoSets) and \
@@ -179,7 +199,8 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
         k = 0
         for i in range(0, len(self._partition)):
             for j in range(0, len(self._partition[i])):
-                G.add_node(k, partition=i, coset=self._partition[i][j], bipartite=i)
+                G.add_node(k, partition=i,
+                           coset=self._partition[i][j], bipartite=i)
                 k += 1
 
         # Add graph Edges
@@ -219,10 +240,9 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
         Enc = self.encoder()
         max_degree = 0
         for poly in Enc.enc_basis():
-            if(poly.lift().degree() > max_degree):
+            if (poly.lift().degree() > max_degree):
                 max_degree = poly.lift().degree()
         return (self.length() - max_degree)
-
 
     def max_dimension(self):
         Enc = self.encoder()
@@ -237,7 +257,8 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
     def minimum_distance_py(self):
         G = self.generator_matrix()
         M = VectorSpace(self.base_field(), self.dimension())
-        zero_vector = vector(self.base_field(),[self.base_field().zero()] * self.length())
+        zero_vector = vector(self.base_field(), [
+                             self.base_field().zero()] * self.length())
         d = self.length()
         for m in M:
             c = m*G
@@ -258,21 +279,28 @@ class TamoBergVectorEncoder(Encoder):
         self._partition, self._partition_size = code.partition()
         self._sub_group, self._sub_group_type = code.sub_group()
         self._base_poly_ring = PolynomialRing(code.base_field(), 'x')
-        self._annihilator = self._calc_annihilator(code.evaluation_points(),self._base_poly_ring)
-        self._quotient_poly_ring = self._base_poly_ring.quotient(self._annihilator, 'x')
+        self._annihilator = self._calc_annihilator(
+            code.evaluation_points(), self._base_poly_ring)
+        self._quotient_poly_ring = self._base_poly_ring.quotient(
+            self._annihilator, 'x')
         self._good_poly = []
         self._algebra_basis = []
         self._enc_basis = []
         for i in range(0, self._num_of_sets):
-            self._good_poly.append(self._calc_good_poly(self._sub_group[i], self._sub_group_type[i], self._quotient_poly_ring))
-            self._algebra_basis.append(self._calc_algebra_basis(self._good_poly[i], self._partition_size[i]))
-            self._enc_basis.append(self._calc_enc_basis(self._algebra_basis[i], code.locality()[i], self._quotient_poly_ring))
+            self._good_poly.append(self._calc_good_poly(
+                self._sub_group[i], self._sub_group_type[i], self._quotient_poly_ring))
+            self._algebra_basis.append(self._calc_algebra_basis(
+                self._good_poly[i], self._partition_size[i]))
+            self._enc_basis.append(self._calc_enc_basis(
+                self._algebra_basis[i], code.locality()[i], self._quotient_poly_ring))
 
-        self._comb_enc_basis = self._calc_combine_enc_basis(self._enc_basis[0], self._enc_basis[1], self._quotient_poly_ring)
+        self._comb_enc_basis = self._calc_combine_enc_basis(
+            self._enc_basis[0], self._enc_basis[1], self._quotient_poly_ring)
 
         self._max_dimension = len(self._comb_enc_basis)
-        if(code.dimension() > self._max_dimension):
-            raise ValueError("code dimension is too big. maximum code dimension: ", self._max_dimension)
+        if (code.dimension() > self._max_dimension):
+            raise ValueError(
+                "code dimension is too big. maximum code dimension: ", self._max_dimension)
 
         self._comb_enc_basis = self._comb_enc_basis[:code.dimension()]
 
@@ -333,7 +361,7 @@ class TamoBergVectorEncoder(Encoder):
         comb_enc_basis = []
         for row in T:
             tmp = S.zero()
-            for i in range(0,len(row)):
+            for i in range(0, len(row)):
                 tmp += row[i] * (x**i)
             if (tmp != S.zero()):
                 comb_enc_basis.append(tmp)
@@ -375,7 +403,7 @@ class TamoBergVectorEncoder(Encoder):
 class TamoBergIterariveDecoder(Decoder):
 
     def __init__(self, code, max_num_of_itr=10):
-        super().__init__(code, code.ambient_space(),"VectorEncoder")
+        super().__init__(code, code.ambient_space(), "VectorEncoder")
         self._max_num_of_itr = max_num_of_itr
         C = self.code()
         self._F = C.base_field()
@@ -396,7 +424,7 @@ class TamoBergIterariveDecoder(Decoder):
             self._partitions_local_decoders.append(decoder_tmp)
             self._partitions_local_codes.append(code_tmp)
             i += 1
-        
+
     def _repr_(self):
         return "Iterative Decoder for %s" % self.code()
 
@@ -405,16 +433,17 @@ class TamoBergIterariveDecoder(Decoder):
         num_itr = 0
         while ((uncorr_err is True) & (num_itr < self._max_num_of_itr)):
             uncorrectable_err = [False, False]
-            for i in range(0,len(self._partitions)):
+            for i in range(0, len(self._partitions)):
                 partition = self._partitions[i]
-                for j in range(0,len(partition)):
+                for j in range(0, len(partition)):
                     r_list = []
                     for k in range(0, len(partition[j])):
                         r_list.append(r[self._evalpts_idx[i][j][k]])
 
                     try:
-                        corr_c = self._partitions_local_decoders[i][j].decode_to_code(vector(self._F, r_list))
-                    except: # Decoding fails
+                        corr_c = self._partitions_local_decoders[i][j].decode_to_code(
+                            vector(self._F, r_list))
+                    except:  # Decoding fails
                         uncorrectable_err[i] = True
                         corr_c = vector(self._F, r_list)
 
@@ -429,11 +458,18 @@ class TamoBergIterariveDecoder(Decoder):
         return r, num_itr
 
 ###### Error-and-Erasure Iterarive Decoder #######
+
+
 class TamoBergIterariveEEDecoder(Decoder):
 
-    def __init__(self, code, max_num_of_itr=10):
+    def __init__(self, code, max_num_of_itr = 10, erasure_start_itr = None):
         super().__init__(code, code.ambient_space(), "VectorEncoder")
         self._max_num_of_itr = max_num_of_itr
+        if erasure_start_itr is None:
+            self._erasure_start_itr = self._max_num_of_itr // 2
+        else:
+            self._erasure_start_itr = erasure_start_itr
+
         C = self.code()
         self._F = C.base_field()
         self._partitions, _ = C.partition()
@@ -456,23 +492,22 @@ class TamoBergIterariveEEDecoder(Decoder):
 
     def _repr_(self):
         return "Iterative Decoder Error-and-Erasure for %s" % self.code()
-    
+
     def decode_to_code(self, r):
-        erasure_start_itr = 5
         erasure_vector = zero_vector(GF(2), len(r))
         uncorr_err = True
         num_itr = 0
         while ((uncorr_err is True) & (num_itr < self._max_num_of_itr)):
             uncorrectable_err = [False, False]
             due_status = []
-            for i in range(0,len(self._partitions)):
+            for i in range(0, len(self._partitions)):
                 partition = self._partitions[i]
                 due_tmp = []
-                for j in range(0,len(partition)):
+                for j in range(0, len(partition)):
                     coset = partition[j]
                     r_list = []
                     erasure_vector_list = []
-                    for k in range(0,len(coset)):
+                    for k in range(0, len(coset)):
                         r_list.append(r[self._evalpts_idx[i][j][k]])
                         erasure_vector_list.append(erasure_vector[self._evalpts_idx[i][j][k]])
 
@@ -482,7 +517,7 @@ class TamoBergIterariveEEDecoder(Decoder):
                     try:
                         corr_c = self._partitions_local_decoders[i][j].decode_to_code(word_and_erasure_vector)
                         due_tmp.append(False)
-                    except: # Decoding fails
+                    except:  # Decoding fails
                         due_tmp.append(True)
                         uncorrectable_err[i] = True
                         corr_c = vector(self._F, r_list)
@@ -505,7 +540,7 @@ class TamoBergIterariveEEDecoder(Decoder):
                             corr_c[e] = d(coset[e])
 
                     # Fix error in r
-                    for l in range(0,len(coset)):
+                    for l in range(0, len(coset)):
                         r[self._evalpts_idx[i][j][l]] = corr_c[l]
 
                 due_status.append(due_tmp)
@@ -514,20 +549,130 @@ class TamoBergIterariveEEDecoder(Decoder):
                 uncorr_err = False
 
             num_itr += 1
-           
-            if (num_itr >= erasure_start_itr):
+
+            if (num_itr >= self._erasure_start_itr):
                 # Loop over Partitions (Two partitions)
-                for s in range(0,len(due_status)): 
+                for s in range(0, len(due_status)):
                     # Loop over Cosets
-                    for t in range(0, len(self._partitions[s])): 
+                    for t in range(0, len(self._partitions[s])):
                         # Loop over pts in coset
-                        for m in range(0, len(self._partitions[s][t])): 
+                        for m in range(0, len(self._partitions[s][t])):
                             # First partition loop marks erasure on all pts in coset with DUE.
-                            if((due_status[s][t] == True) & (s == 0)):
+                            if ((due_status[s][t] == True) & (s == 0)):
                                 erasure_vector[self._evalpts_idx[s][t][m]] = 1
                             # Second parition loop cleans up erasure marking on pts belonging to coset with no errors.
-                            elif(due_status[s][t] == False): 
+                            elif (due_status[s][t] == False):
                                 erasure_vector[self._evalpts_idx[s][t][m]] = 0
+
+        corr_c_and_erasure_vector = r, vector(GF(2), erasure_vector)
+        return corr_c_and_erasure_vector, num_itr
+
+###### TamoBergGlobalDecoder #######
+
+
+class TamoBergGlobalDecoder(Decoder):
+
+    def __init__(self, code):
+        super().__init__(code, code.ambient_space(), "VectorEncoder")
+        self._global_grs = GeneralizedReedSolomonCode(
+            code.evaluation_points(), code.length()-code.design_distance()+1)
+        self._global_decoder = self._global_grs.decoder("KeyEquationSyndrome")
+
+    def _repr_(self):
+        return "Global Decoder for %s" % self.code()
+
+    def decode_to_code(self, r):
+        return self._global_decoder.decode_to_code(r)
+
+
+###### TamoBergGlobal-Error-and-Erasure-Decoder #######
+class TamoBergGlobalEEDecoder(Decoder):
+
+    def __init__(self, code):
+        super().__init__(code, code.ambient_space(), "VectorEncoder")
+        self._global_grs = GeneralizedReedSolomonCode(
+            code.evaluation_points(), code.length()-code.design_distance()+1)
+        self._global_decoder = self._global_grs.decoder("ErrorErasure")
+
+    def _repr_(self):
+        return "Global Erasure-and-Error Decoder for %s" % self.code()
+
+    def decode_to_code(self, word_and_erasure_vector):
+        word, erasure_vector = word_and_erasure_vector
+
+        # TODO: Implement single erasure decoder.
+        if erasure_vector.hamming_weight() == self._global_grs.minimum_distance()-1:
+            evalpts = self.code().evaluation_ponts()
+            pts = []
+            era = []
+            for i in range(0, len(erasure_vector)):
+                if (erasure_vector[i] == 0):
+                    pts.append((evalpts[i], word[i]))
+                else:  # Erasure idx
+                    era.append(i)
+
+            # Compute Encoding Poly
+            R = PolynomialRing(self.code().base_field(), 'x')
+            d = R.lagrange_polynomial(pts)
+
+            corr_c = word
+            # Compute value in erasure pts
+            for e in era:
+                corr_c[e] = d(evalpts[e])
+        else:
+            corr_c = self._global_decoder.decode_to_code(
+                word_and_erasure_vector)
+
+        return corr_c
+
+
+###### TamoBergTwoStepDecoder #######
+class TamoBergTwoStepDecoder(Decoder):
+
+    def __init__(self, code, max_num_of_itr=10):
+        super().__init__(code, code.ambient_space(), "VectorEncoder")
+        self._iter_decoder = TamoBergIterariveDecoder(code, max_num_of_itr)
+        self._global_decoder = TamoBergGlobalDecoder(code)
+
+    def _repr_(self):
+        return "Two-Steps Decoder for %s" % self.code()
+
+    def decode_to_code(self, r):
+        # First Step - Iterative Decoder
+        tmp, num_itr = self._iter_decoder.decode_to_code(r)
+
+        # Second Step - Global Decoder
+        try:
+            r = self._global_decoder.decode_to_code(tmp)
+        except:
+            r = tmp
+
+        return r, num_itr
+
+
+###### TamoBergTwoStepEEDecoder #######
+class TamoBergTwoStepEEDecoder(Decoder):
+
+    def __init__(self, code, max_num_of_itr=10, erasure_start_itr=None):
+        super().__init__(code, code.ambient_space(), "VectorEncoder")
+        self._iter_ee_decoder = TamoBergIterariveEEDecoder(code, max_num_of_itr, erasure_start_itr)
+        self._global_ee_decoder = TamoBergGlobalEEDecoder(code)
+
+    def _repr_(self):
+        return "Two-Steps Erasure-and-Error Decoder for %s" % self.code()
+
+    def decode_to_code(self, r):
+        # First Step - Iterative Decoder
+        tmp, num_itr = self._iter_ee_decoder.decode_to_code(r)
+
+        print("step1 resutls:", tmp)
+        print("num of erasures:", tmp[1].hamming_weight())
+
+        # Second Step - Global Decoder
+        try:
+            r = self._global_ee_decoder.decode_to_code(tmp)
+        except:
+            r = tmp[0]
 
         return r, num_itr
 
@@ -535,4 +680,8 @@ class TamoBergIterariveEEDecoder(Decoder):
 ####################### registration ###############################
 TamoBergCodeTwoSets._registered_encoders["VectorEncoder"] = TamoBergVectorEncoder
 TamoBergCodeTwoSets._registered_decoders["IterativeDecoder"] = TamoBergIterariveDecoder
+TamoBergCodeTwoSets._registered_decoders["TwoStepsDecoder"] = TamoBergTwoStepDecoder
+TamoBergCodeTwoSets._registered_decoders["GlobalDecoder"] = TamoBergGlobalDecoder
 TamoBergCodeTwoSets._registered_decoders["IterativeErasureErrorDecoder"] = TamoBergIterariveEEDecoder
+TamoBergCodeTwoSets._registered_decoders["GlobalErasureErrorDecoder"] = TamoBergGlobalEEDecoder
+TamoBergCodeTwoSets._registered_decoders["TwoStepsErasureErrorDecoder"] = TamoBergTwoStepEEDecoder

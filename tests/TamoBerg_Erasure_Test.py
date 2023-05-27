@@ -10,7 +10,7 @@ q = 13  # Field size
 n = 12  # Code dimension
 k = 8  # Information/message dimension
 r = 3  # Locality of the code
-local_minimum_distance = 2  
+local_minimum_distance = 2
 
 n_err, n_era = 0, 1
 

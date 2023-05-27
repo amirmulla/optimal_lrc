@@ -60,7 +60,7 @@ def list_sub_group_cosets(sub_group, sub_group_type):
                 tmp.append(h + g)
         tmp.sort()
         h_cosets.append(tmp)
-        
+
     return list(map(list, set(map(lambda i: tuple(i), h_cosets))))
 
 sub_group_0 = multiplicative_subgroups[3]
@@ -86,7 +86,7 @@ a_costs = list_sub_group_cosets(sub_group_1, "add")
 
 for x in m_costs:
     print(x)
-    
+
 print("###########################")
 
 for y in a_costs:
