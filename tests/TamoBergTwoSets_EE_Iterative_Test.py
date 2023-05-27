@@ -4,17 +4,19 @@ sys.path.append('./src')
 from sage.all import *
 from TamoBergTwoSets import *
 from sage.coding.channel import StaticErrorRateChannel
+#from sage.coding.channel import ErrorErasureChannel
+
 import time
 
 #set_random_seed(100)
 
 q = 256  # Field size
 n = 255  # Code dimension
-k = 12  # Information/message dimension
+k = 36  # Information/message dimension
 r = [3, 4]  # Locality of the code
 local_minimum_distance = [3, 14]  # correct one error
 sub_group_type = ["mult", "mult"]
-n_err = 1
+n_err = 120
 max_num_of_itr = 10
 
 # GF
@@ -42,6 +44,7 @@ print("Locality r1: ", r[0])
 print("Locality r2: ", r[1])
 print("Local Minimum distance d1: ", local_minimum_distance[0])
 print("Local Minimum distance d2: ", local_minimum_distance[1])
+print("Design Distance: ", C.design_distance())
 print("First Subgroup: ", sub_group[0])
 print("First Subgroup Type: ", sub_group_type[0])
 print("First Subgroup Size: ", len(sub_group[0]))
@@ -49,7 +52,8 @@ print("Second Subgroup: ", sub_group[1])
 print("Second Subgroup Type: ", sub_group_type[1])
 print("Second Subgroup Size: ", len(sub_group[1]))
 
-Dec = C.decoder("IterativeErasureErrorDecoder", max_num_of_itr)
+#åDec = C.decoder("IterativeErasureErrorDecoder", max_num_of_itr)
+Dec = C.decoder("TwoStepsErasureErrorDecoder", max_num_of_itr)
 Enc = C.encoder()
 c = Enc.encode(message)
 
@@ -68,23 +72,21 @@ print("enc_basis: ", enc_basis[1])
 print("---------------------------------------")
 print("enc_comb_enc_basis: ", enc_comb_enc_basis)
 Chan = StaticErrorRateChannel(V, n_err)
-num_of_mrs = 100
+num_of_mrs = 10
 
-print_log = False
+print_log = True
 
 st = time.time()
 for i in range(0, num_of_mrs):
     r = Chan.transmit(c)
     e = r - c
-    correct_c = Dec.decode_to_code(r)
+    correct_c, num_of_itr = Dec.decode_to_code(r)
     if print_log:
         print("Error              : ", e)
         print("Recieved Word      : ", r)
-        print("Original Codeword  : ", c)
         print("Corrected Codeword : ", correct_c)
-        print("Correction Successfull: ", correct_c[0] == c)
-        print("evalpts: ", evalpts)
-        print("Error: ", correct_c[0] - c)
+        print("Correction Successfull: ", correct_c == c)
+        print("Num of Iterations: ", num_of_itr)
 
 et = time.time()
 elapsed_time = (et - st) * (10 ** 3)

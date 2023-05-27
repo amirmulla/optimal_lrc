@@ -47,7 +47,9 @@ print("Second Subgroup Type: ", sub_group_type[1])
 print("Second Subgroup Size: ", len(sub_group[1]))
 
 
-Dec = C.decoder("IterativeDecoder", max_num_of_itr)
+# Dec = C.decoder("IterativeDecoder", max_num_of_itr)
+Dec = C.decoder("TwoStepsDecoder", max_num_of_itr)
+#Dec = C.decoder("GlobalDecoder")
 Enc = C.encoder()
 c = Enc.encode(message)
 
@@ -75,22 +77,20 @@ evalpts = C.evaluation_points()
 Chan = StaticErrorRateChannel(V, n_err)
 
 avg = 0
-num_of_mrs = 100
-print_log = False
+num_of_mrs = 10
+print_log = True
 
 st = time.time()
 for i in range(0, num_of_mrs):
     r = Chan.transmit(c)
     e = r - c
-    correct_c = Dec.decode_to_code(r)
+    correct_c, _ = Dec.decode_to_code(r)
+
     if print_log:
         print("Error              : ", e)
         print("Recieved Word      : ", r)
-        print("Original Codeword  : ", c)
         print("Corrected Codeword : ", correct_c)
-        print("Correction Successfull: ", correct_c[0] == c)
-        print("evalpts: ", evalpts)
-        print("Error: ", correct_c[0] - c)
+        print("Correction Successfull: ", correct_c == c)
 
 et = time.time()
 elapsed_time = (et - st) * (10 ** 3)

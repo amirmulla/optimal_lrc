@@ -229,7 +229,6 @@ class TamoBergErasureDecoder(Decoder):
     def decode_to_code(self, word_and_erasure_vector):
         C = self.code()
         word, erasure_vector = word_and_erasure_vector
-        n, k = C.length(), C.dimension()
         m = C.locality() + C.local_minimum_distance() - 1
         erasure_vector_list = [erasure_vector[x:x + m] for x in range(0, len(erasure_vector), m)]
         word_list = [word[x:x + m] for x in range(0, len(word), m)]
