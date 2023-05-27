@@ -1,5 +1,5 @@
 import sys
-
+import time
 sys.path.append('./src')
 
 from sage.all import *
@@ -7,11 +7,11 @@ from TamoBergTwoSets import *
 from sage.coding.channel import StaticErrorRateChannel
 
 q = 256  # Field size
-n = 256  # Code dimension
-k = 38 # Information/message dimension
-r = [14, 3]  # Locality of the code
-local_minimum_distance = [3, 3]  # correct one error
-sub_group_type = ["add", "mult"]
+n = 255  # Code dimension
+k = 12  # Information/message dimension
+r = [3, 4]  # Locality of the code
+local_minimum_distance = [3, 14]  # correct one error
+sub_group_type = ["mult", "mult"]
 n_err = 1
 max_num_of_itr = 10
 
@@ -74,14 +74,24 @@ evalpts = C.evaluation_points()
 
 Chan = StaticErrorRateChannel(V, n_err)
 
-r = Chan.transmit(c)
-e = r - c
+avg = 0
+num_of_mrs = 100
+print_log = False
 
-print("Error              : ", e)
-print("Recieved Word      : ", r)
-print("Original Codeword  : ", c)
+st = time.time()
+for i in range(0, num_of_mrs):
+    r = Chan.transmit(c)
+    e = r - c
+    correct_c = Dec.decode_to_code(r)
+    if print_log:
+        print("Error              : ", e)
+        print("Recieved Word      : ", r)
+        print("Original Codeword  : ", c)
+        print("Corrected Codeword : ", correct_c)
+        print("Correction Successfull: ", correct_c[0] == c)
+        print("evalpts: ", evalpts)
+        print("Error: ", correct_c[0] - c)
 
-correct_c = Dec.decode_to_code(r)
-
-print("Corrected Codeword : ", correct_c)
-print("Correction Successfull: ", correct_c[0] == c)
+et = time.time()
+elapsed_time = (et - st) * (10 ** 3)
+print('Average Decoding Function Execution time:', (elapsed_time/num_of_mrs), 'msec')

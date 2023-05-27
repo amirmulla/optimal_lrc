@@ -377,54 +377,52 @@ class TamoBergIterariveDecoder(Decoder):
     def __init__(self, code, max_num_of_itr=10):
         super().__init__(code, code.ambient_space(),"VectorEncoder")
         self._max_num_of_itr = max_num_of_itr
-
-    def _repr_(self):
-        return "Iterative Decoder for %s" % self.code()
-
-    def decode_to_code(self, r):
         C = self.code()
-        F = C.base_field()
-        partitions, _ = C.partition()
-        evalpts_idx = C.evaluation_points_idx()
+        self._F = C.base_field()
+        self._partitions, _ = C.partition()
+        self._evalpts_idx = C.evaluation_points_idx()
 
         i = 0
-        partitions_local_decoders = []
-        partitions_local_codes = []
-        for partition in partitions:
+        self._partitions_local_decoders = []
+        self._partitions_local_codes = []
+        for partition in self._partitions:
             code_tmp = []
             decoder_tmp = []
             for coset in partition:
                 local_grs = GeneralizedReedSolomonCode(coset, C.locality()[i])
                 code_tmp.append(local_grs)
-                decoder_tmp.append(local_grs.decoder("Gao"))
+                decoder_tmp.append(local_grs.decoder("KeyEquationSyndrome"))
 
-            partitions_local_decoders.append(decoder_tmp)
-            partitions_local_codes.append(code_tmp)
+            self._partitions_local_decoders.append(decoder_tmp)
+            self._partitions_local_codes.append(code_tmp)
             i += 1
+        
+    def _repr_(self):
+        return "Iterative Decoder for %s" % self.code()
 
+    def decode_to_code(self, r):
         uncorr_err = True
         num_itr = 0
         while ((uncorr_err is True) & (num_itr < self._max_num_of_itr)):
             uncorrectable_err = [False, False]
-            for i in range(0,len(partitions)):
-                partition = partitions[i]
+            for i in range(0,len(self._partitions)):
+                partition = self._partitions[i]
                 for j in range(0,len(partition)):
-                    coset = partition[j]
                     r_list = []
-                    for k in range(0,len(coset)):
-                        r_list.append(r[evalpts_idx[i][j][k]])
+                    for k in range(0, len(partition[j])):
+                        r_list.append(r[self._evalpts_idx[i][j][k]])
 
                     try:
-                        corr_c = partitions_local_decoders[i][j].decode_to_code(vector(F, r_list))
+                        corr_c = self._partitions_local_decoders[i][j].decode_to_code(vector(self._F, r_list))
                     except: # Decoding fails
                         uncorrectable_err[i] = True
-                        corr_c = vector(F, r_list)
+                        corr_c = vector(self._F, r_list)
 
-                    r_list = list(corr_c)
+                    #r_list = list(corr_c)
 
                     # Fix error in r
-                    for l in range(0,len(coset)):
-                        r[evalpts_idx[i][j][l]] = r_list[l]
+                    for l in range(0, len(partition[j])):
+                        r[self._evalpts_idx[i][j][l]] = r_list[l]
 
             if (uncorrectable_err[0] == False & uncorrectable_err[1] == False):
                 uncorr_err = False
@@ -438,21 +436,15 @@ class TamoBergIterariveEEDecoder(Decoder):
     def __init__(self, code, max_num_of_itr=10):
         super().__init__(code, code.ambient_space(), "VectorEncoder")
         self._max_num_of_itr = max_num_of_itr
-
-    def _repr_(self):
-        return "Iterative Decoder Error-and-Erasure for %s" % self.code()
-
-    def decode_to_code(self, r, orig_c=0):
-        print_log = False
         C = self.code()
-        F = C.base_field()
-        partitions, _ = C.partition()
-        evalpts_idx = C.evaluation_points_idx()
+        self._F = C.base_field()
+        self._partitions, _ = C.partition()
+        self._evalpts_idx = C.evaluation_points_idx()
 
         i = 0
-        partitions_local_decoders = []
-        partitions_local_codes = []
-        for partition in partitions:
+        self._partitions_local_decoders = []
+        self._partitions_local_codes = []
+        for partition in self._partitions:
             code_tmp = []
             decoder_tmp = []
             for coset in partition:
@@ -460,57 +452,45 @@ class TamoBergIterariveEEDecoder(Decoder):
                 code_tmp.append(local_grs)
                 decoder_tmp.append(local_grs.decoder("ErrorErasure"))
 
-            partitions_local_decoders.append(decoder_tmp)
-            partitions_local_codes.append(code_tmp)
+            self._partitions_local_decoders.append(decoder_tmp)
+            self._partitions_local_codes.append(code_tmp)
             i += 1
 
-
+    def _repr_(self):
+        return "Iterative Decoder Error-and-Erasure for %s" % self.code()
+    
+    def decode_to_code(self, r):
         erasure_start_itr = 5
-
         erasure_vector = zero_vector(GF(2), len(r))
         uncorr_err = True
         num_itr = 0
         while ((uncorr_err is True) & (num_itr < self._max_num_of_itr)):
             uncorrectable_err = [False, False]
             due_status = []
-            for i in range(0,len(partitions)):
-                partition = partitions[i]
+            for i in range(0,len(self._partitions)):
+                partition = self._partitions[i]
                 due_tmp = []
                 for j in range(0,len(partition)):
                     coset = partition[j]
                     r_list = []
-                    orig_c_list = []
                     erasure_vector_list = []
                     for k in range(0,len(coset)):
-                        r_list.append(r[evalpts_idx[i][j][k]])
-                        erasure_vector_list.append(erasure_vector[evalpts_idx[i][j][k]])
-                        if print_log:
-                            orig_c_list.append(orig_c[evalpts_idx[i][j][k]])
+                        r_list.append(r[self._evalpts_idx[i][j][k]])
+                        erasure_vector_list.append(erasure_vector[self._evalpts_idx[i][j][k]])
 
-
-                    word_and_erasure_vector = vector(F, r_list), vector(GF(2), erasure_vector_list)
-
+                    word_and_erasure_vector = vector(self._F, r_list), vector(GF(2), erasure_vector_list)
                     erasure_vec = vector(GF(2), erasure_vector_list)
 
                     try:
-                        corr_c = partitions_local_decoders[i][j].decode_to_code(word_and_erasure_vector)
+                        corr_c = self._partitions_local_decoders[i][j].decode_to_code(word_and_erasure_vector)
                         due_tmp.append(False)
                     except: # Decoding fails
                         due_tmp.append(True)
                         uncorrectable_err[i] = True
-                        corr_c = vector(F, r_list)
+                        corr_c = vector(self._F, r_list)
 
-                    if ((num_itr >= erasure_start_itr) & (print_log == True)):
-                        print("#######################################################")
-                        print(j,":",word_and_erasure_vector)
-                        print("Orig_c:" ,orig_c_list)
-                        print("Error:", vector(F, r_list) - vector(F, orig_c_list))
-                        print("corr_c:", corr_c)
-                        print("DUE Status:", due_tmp[j])
-                        print(partitions_local_decoders[i][j])
-                        print("#######################################################")
-
-                    if erasure_vec.hamming_weight() == partitions_local_codes[i][j].minimum_distance()-1:
+                    # TODO: Implement single erasure decoder.
+                    if erasure_vec.hamming_weight() == self._partitions_local_codes[i][j].minimum_distance()-1:
                         pts = []
                         err = []
                         for k in range(0, len(coset)):
@@ -519,42 +499,38 @@ class TamoBergIterariveEEDecoder(Decoder):
                             else:
                                 err.append(k)
 
-                        R = PolynomialRing(C.base_field(), 'x')
+                        R = PolynomialRing(self.code().base_field(), 'x')
                         d = R.lagrange_polynomial(pts)
 
-                        corr_c = vector(F, r_list)
+                        corr_c = vector(self._F, r_list)
                         for e in err:
                             corr_c[e] = d(coset[e])
 
-                    r_list = list(corr_c)
-
+                    #r_list = list(corr_c)
                     # Fix error in r
                     for l in range(0,len(coset)):
-                        r[evalpts_idx[i][j][l]] = r_list[l]
+                        r[self._evalpts_idx[i][j][l]] = r_list[l]
 
                 due_status.append(due_tmp)
 
             if (uncorrectable_err[0] == False & uncorrectable_err[1] == False):
                 uncorr_err = False
 
-            if print_log:
-                print(num_itr, ":", due_status)
-
             num_itr += 1
-
+           
             if (num_itr >= erasure_start_itr):
-                for s in range(0,len(due_status)):
-                    p = partitions[s]
-                    for t in range(0,len(p)):
-                        for m in range(0, len(p[t])):
+                # Loop over Partitions (Two partitions)
+                for s in range(0,len(due_status)): 
+                    # Loop over Cosets
+                    for t in range(0, len(self._partitions[s])): 
+                        # Loop over pts in coset
+                        for m in range(0, len(self._partitions[s][t])): 
+                            # First partition loop marks erasure on all pts in coset with DUE.
                             if((due_status[s][t] == True) & (s == 0)):
-                                erasure_vector[evalpts_idx[s][t][m]] = 1
-                            elif(due_status[s][t] == False):
-                                erasure_vector[evalpts_idx[s][t][m]] = 0
-
-                if print_log:
-                    print("Erasure Vector:", erasure_vector)
-                    print("Error         :", r-orig_c)
+                                erasure_vector[self._evalpts_idx[s][t][m]] = 1
+                            # Second parition loop cleans up erasure marking on pts belonging to coset with no errors.
+                            elif(due_status[s][t] == False): 
+                                erasure_vector[self._evalpts_idx[s][t][m]] = 0
 
         return r, num_itr
 
