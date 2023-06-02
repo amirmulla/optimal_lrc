@@ -37,12 +37,16 @@ if exact_distance is None:
 else:
     sim_num_of_err = exact_distance + 1 
 
-q = 125  # Field size
-n = 125  # Code Length
-k = 2   # Code Dimension
-r = [2, 2]  # Locality of the code
-local_minimum_distance = [24, 30]  # correct one error
-sub_group_type = ["add", "mult"]
+q = 81  # Field size
+n = 80  # Code Length
+
+print(factor(81))
+print(factor(80))
+
+k = 6   # Code Dimension
+r = [5, 5]  # Locality of the code
+local_minimum_distance = [5, 5]  # correct one error
+sub_group_type = ["add", "add"]
 max_num_of_itr = 10
 
 # Shorten code in case of different sub-group types.
@@ -54,7 +58,7 @@ else:
 # GF
 F = GF(q, repr='int')
 
-C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type)
+C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, shift_add=True)
 
 # Message Space
 M = VectorSpace(F, k)
@@ -121,7 +125,6 @@ print("Second Subgroup Type: ", sub_group_type[1])
 print("Second Subgroup Size: ", len(sub_group[1]))
 print("Partitions Graph is Connected:", nx.is_connected(G))
 print("Number of disjoint subgraphs:", nx.number_connected_components(G))
-print("Partitions Graph Edge Expansion:", cuts.edge_expansion(G, G_R))
 print("Evaluation Points: ", evalpts)
 print("Codeword : ", c)
 

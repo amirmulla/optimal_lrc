@@ -419,7 +419,7 @@ class TamoBergIterariveDecoder(Decoder):
             for coset in partition:
                 local_grs = GeneralizedReedSolomonCode(coset, C.locality()[i])
                 code_tmp.append(local_grs)
-                decoder_tmp.append(local_grs.decoder("KeyEquationSyndrome"))
+                decoder_tmp.append(local_grs.decoder("Gao"))
 
             self._partitions_local_decoders.append(decoder_tmp)
             self._partitions_local_codes.append(code_tmp)
@@ -576,7 +576,7 @@ class TamoBergGlobalDecoder(Decoder):
         super().__init__(code, code.ambient_space(), "VectorEncoder")
         self._global_grs = GeneralizedReedSolomonCode(
             code.evaluation_points(), code.length()-code.design_distance()+1)
-        self._global_decoder = self._global_grs.decoder("KeyEquationSyndrome")
+        self._global_decoder = self._global_grs.decoder("Gao")
 
     def _repr_(self):
         return "Global Decoder for %s" % self.code()
