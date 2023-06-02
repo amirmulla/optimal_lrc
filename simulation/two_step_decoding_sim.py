@@ -33,19 +33,15 @@ print_freq_factor = 5  # Print frequency
 
 # Number of error to simulate
 if exact_distance is None:
-    sim_num_of_err = 200
+    sim_num_of_err = 125
 else:
     sim_num_of_err = exact_distance + 1 
 
-q = 81  # Field size
-n = 80  # Code Length
-
-print(factor(81))
-print(factor(80))
-
+q = 125  # Field size
+n = 125  # Code Length
 k = 6   # Code Dimension
-r = [5, 5]  # Locality of the code
-local_minimum_distance = [5, 5]  # correct one error
+r = [3, 3]  # Locality of the code
+local_minimum_distance = [3, 3]  # correct one error
 sub_group_type = ["add", "add"]
 max_num_of_itr = 10
 
