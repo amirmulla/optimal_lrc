@@ -1,14 +1,11 @@
 import sys
-
-from src.TamoBergTwoSets import TamoBergCodeTwoSets
+import time
 sys.path.append('./src')
 
 from sage.all import *
-from TamoBergTwoSets import *
 from sage.coding.channel import StaticErrorRateChannel
-#from sage.coding.channel import ErrorErasureChannel
+from TamoBergTwoSets import TamoBergCodeTwoSets
 
-import time
 
 #set_random_seed(100)
 

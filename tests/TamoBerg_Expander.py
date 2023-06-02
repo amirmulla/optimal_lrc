@@ -1,7 +1,4 @@
 import sys
-
-from src.TamoBergTwoSets import TamoBergCodeTwoSets
-
 sys.path.append('./src')
 
 from sage.all import *
@@ -10,9 +7,8 @@ import matplotlib.pyplot as plt
 from networkx.algorithms import bipartite
 from networkx.algorithms import *
 from networkx.algorithms.connectivity import EdgeComponentAuxGraph
-
-from TamoBergTwoSets import *
 from sage.coding.channel import StaticErrorRateChannel
+from TamoBergTwoSets import TamoBergCodeTwoSets
 
 
 #set_random_seed(100)

@@ -1,12 +1,9 @@
 import sys
-
-from src.TamoBerg import TamoBergCode
-
 sys.path.append('./src')
 
 from sage.all import *
-from TamoBerg import *
 from sage.coding.channel import StaticErrorRateChannel
+from TamoBerg import TamoBergCode
 
 # LRC Parameters
 q = 16  # Field size

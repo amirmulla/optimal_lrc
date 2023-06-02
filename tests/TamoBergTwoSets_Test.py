@@ -1,12 +1,10 @@
 import sys
 import time
-
-from src.TamoBergTwoSets import TamoBergCodeTwoSets
 sys.path.append('./src')
 
 from sage.all import *
-from TamoBergTwoSets import *
 from sage.coding.channel import StaticErrorRateChannel
+from TamoBergTwoSets import TamoBergCodeTwoSets
 
 q = 256  # Field size
 n = 255  # Code dimension
