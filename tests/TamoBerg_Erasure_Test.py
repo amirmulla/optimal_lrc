@@ -1,5 +1,7 @@
 import sys
 
+from src.TamoBerg import TamoBergCode
+
 sys.path.append('./src')
 
 from sage.coding.channel import ErrorErasureChannel

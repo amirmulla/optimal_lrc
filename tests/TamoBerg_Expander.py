@@ -1,5 +1,7 @@
 import sys
 
+from src.TamoBergTwoSets import TamoBergCodeTwoSets
+
 sys.path.append('./src')
 
 from sage.all import *

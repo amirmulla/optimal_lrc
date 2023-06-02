@@ -1,10 +1,12 @@
 import sys
 import os
 
+
 sys.path.append('./src')
 
 from sage.all import *
 from TamoBergTwoSets import *
+from src.TamoBergTwoSets import TamoBergCodeTwoSets
 from sage.coding.channel import StaticErrorRateChannel
 import networkx as nx
 import matplotlib.pyplot as plt
