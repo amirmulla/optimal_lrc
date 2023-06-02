@@ -54,7 +54,7 @@ else:
 # GF
 F = GF(q, repr='int')
 
-C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, shift_add=True)
+C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, shift_add=False)
 
 # Message Space
 M = VectorSpace(F, k)
