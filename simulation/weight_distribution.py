@@ -7,12 +7,12 @@ from TamoBergTwoSets import TamoBergCodeTwoSets
 import csv
 from sage.all import *
 
-q = 16  # Field size
-n = 16  # Code Length
-k = 4  # Code Dimension
-r = [3, 3]  # Locality of the code
-local_minimum_distance = [2, 3]  # correct one error
-sub_group_type = ["add", "mult"]
+q = 64  # Field size
+n = 64  # Code Length
+k = 6  # Code Dimension
+r = [3, 4]  # Locality of the code
+local_minimum_distance = [6, 5]  # correct one error
+sub_group_type = ["add", "add"]
 
 # GF
 F = GF(q, repr='int')
