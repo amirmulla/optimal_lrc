@@ -1,10 +1,12 @@
+from sage.all import *
+from itertools import combinations
 import sys
 import time
+
 sys.path.append('./src')
 
 from TamoBergTwoSets import TamoBergCodeTwoSets
 from sage.coding.channel import StaticErrorRateChannel
-from sage.all import *
 
 #############
 
