@@ -6,12 +6,12 @@ from sage.all import *
 from sage.coding.channel import StaticErrorRateChannel
 from TamoBergTwoSets import TamoBergCodeTwoSets
 
-q = 256  # Field size
-n = 255  # Code dimension
-k = 12  # Information/message dimension
+q = 81  # Field size
+n = 81  # Code dimension
+k = 5  # Information/message dimension
 r = [3, 4]  # Locality of the code
-local_minimum_distance = [3, 14]  # correct one error
-sub_group_type = ["mult", "mult"]
+local_minimum_distance = [7, 5]  # correct one error
+sub_group_type = ["add", "mult"]
 n_err = 1
 max_num_of_itr = 10
 
@@ -34,6 +34,7 @@ partitions, _ = C.partition()
 print("GF: ", q)
 print("Code dim n: ", n)
 print("Message dim k: ", k)
+print("max k: ", C.max_dimension())
 print("Locality r1: ", r[0])
 print("Locality r2: ", r[1])
 print("Local Minimum distance d1: ", local_minimum_distance[0])
