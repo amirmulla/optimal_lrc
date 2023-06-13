@@ -13,7 +13,7 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
     _registered_encoders = {}
     _registered_decoders = {}
 
-    def __init__(self, base_field, length, dimension, locality, local_minimum_distance=2, sub_group_type="any", shift_add=False):
+    def __init__(self, base_field, length, dimension, locality, local_minimum_distance=2, sub_group_type="any", shift_add=False, subgroup=[None, None]):
         super().__init__(base_field, length, "VectorEncoder", "IterativeDecoder")
         if not base_field.is_finite():
             raise ValueError("base_field has to be a finite field")
@@ -83,40 +83,36 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
             self._partition = []
             self._evaluation_points_idx = []
             for i in range(0, self._num_of_sets):
-                if (self._sub_group_type[i] == "mult"):
-                    try:
-                        self._sub_group.append(
-                            self._mult_sub_groups[locality[i] + local_minimum_distance[i] - 1])
-                    except:
-                        print("Can't find mult subgroup of size: ",
-                              locality[i] + local_minimum_distance[i] - 1)
-                        print("Possible Mult Subgroups: ",
-                              self._mult_sub_groups)
+                if(subgroup[i] == None):
+                    if (self._sub_group_type[i] == "mult"):
+                        try:
+                            self._sub_group.append(self._mult_sub_groups[locality[i] + local_minimum_distance[i] - 1])
+                        except:
+                            print("Can't find mult subgroup of size: ",locality[i] + local_minimum_distance[i] - 1)
+                            print("Possible Mult Subgroups: ",self._mult_sub_groups)
 
-                elif (self._sub_group_type[i] == "add"):
-                    try:
-                        self._sub_group.append(
-                            self._add_sub_groups[locality[i] + local_minimum_distance[i] - 1])
-                    except:
-                        print("Can't find add subgroup of size: ",
-                              locality[i] + local_minimum_distance[i] - 1)
-                        print("Possible Add Subgroups: ", self._add_sub_groups)
+                    elif (self._sub_group_type[i] == "add"):
+                        try:
+                            self._sub_group.append(self._add_sub_groups[locality[i] + local_minimum_distance[i] - 1])
+                        except:
+                            print("Can't find add subgroup of size: ",locality[i] + local_minimum_distance[i] - 1)
+                            print("Possible Add Subgroups: ", self._add_sub_groups)
 
-                    # shift group to get the second add subgroup that intersect only at zero
-                    if ((i == 1) & (self._sub_group_type[0] == self._sub_group_type[1])) or shift_add:
-                        a = base_field.primitive_element()
-                        p = base_field.characteristic()
-                        multiplier = (a**log(len(self._sub_group[0]), p))
-                        tmp = []
-                        for h in self._sub_group[i]:
-                            tmp.append(h * multiplier)
-                        tmp.sort()
-                        self._sub_group[i] = tmp
+                        # shift group to get the second add subgroup that intersect only at zero
+                        if ((i == 1) & (self._sub_group_type[0] == self._sub_group_type[1])) or shift_add:
+                            a = base_field.primitive_element()
+                            p = base_field.characteristic()
+                            multiplier = (a**log(len(self._sub_group[0]), p))
+                            tmp = []
+                            for h in self._sub_group[i]:
+                                tmp.append(h * multiplier)
+                            tmp.sort()
+                            self._sub_group[i] = tmp
+                else:
+                    self._sub_group.append(subgroup[i])
 
-                self._parition_size.append(
-                    int(length / (locality[i] + local_minimum_distance[i] - 1)))
-                self._partition.append(self._list_sub_group_cosets(
-                    sub_group=self._sub_group[i], sub_group_type=self._sub_group_type[i])[:self._parition_size[i]])
+                self._parition_size.append(int(length / (locality[i] + local_minimum_distance[i] - 1)))
+                self._partition.append(self._list_sub_group_cosets(sub_group=self._sub_group[i], sub_group_type=self._sub_group_type[i])[:self._parition_size[i]])
 
             self._evaluation_points = flatten(self._partition[0])
             self._evaluation_points.sort()
