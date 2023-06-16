@@ -11,6 +11,7 @@ from sage.coding.channel import StaticErrorRateChannel
 from sage.coding.channel import random_error_vector
 from TamoBergTwoSets import TamoBergCodeTwoSets
 from sage.all import *
+from Expander import *
 from AdditiveSubgroup import *
 from random import sample
 
@@ -31,23 +32,23 @@ use_enc = False
 # excat distnace
 exact_distance = None
 
-sim_itr = 5000  # Statistical Accuracy
+sim_itr = 10  # Statistical Accuracy
 print_freq_factor = 5  # Print frequency
 
-start_err = 10
+start_err = 1
 
 # Number of error to simulate
 if exact_distance is None:
-    sim_num_of_err = 20
+    sim_num_of_err = 16
 else:
     sim_num_of_err = exact_distance + 1 
 
 q = 64  # Field size
 n = 64  # Code Length
 k = 6   # Code Dimension
-r = [2, 4]  # Locality of the code
-local_minimum_distance = [3, 4]  # correct one error
-sub_group_type = ["add", "mult"]
+r = [2, 2]  # Locality of the code
+local_minimum_distance = [3, 3]  # correct one error
+sub_group_type = ["add", "add"]
 max_num_of_itr = 10
 
 # Shorten code in case of different sub-group types.
@@ -162,17 +163,19 @@ writer.writerow(["Codeword : ", c])
 # Save Graph Picture
 plt.savefig(graph_path)
 
-max_num_of_err = min(n-k, sim_num_of_err)
+writer.writerow(["Num_of_error_symbols", "probability_of_success","avg_remin_err_weight"])
+
+#sub_graph_list = get_error_position_subgraph(G,1)
+sub_graph_list = list(range(0,16))
+print("subgraph evalpts idx:",sub_graph_list)
+
+max_num_of_err = min(n-k, sim_num_of_err, len(sub_graph_list))
 print_freq = int(sim_itr / print_freq_factor)
 
-writer.writerow(["Num_of_error_symbols", "average_num_of_iteration", "probability_of_success"])
-
-sub_graph_list = list(range(0,16))
-
-for n_err in range(start_err, max_num_of_err):
+for n_err in range(start_err, max_num_of_err + 1):
     print("Error Weight: ", n_err)
     success_itr = 0
-    overall_num_itr = 0
+    overall_remin_err_weight = 0
 
     for i in range(0, sim_itr):
         error_positions = sample(sub_graph_list, n_err)       
@@ -187,19 +190,21 @@ for n_err in range(start_err, max_num_of_err):
         if (correct_c == c):
             success = True
             success_itr += 1
-            overall_num_itr += num_of_itr
+            remin_err_weight = 0
         else:
-            success = False
+            remin_err_weight = (c - correct_c).hamming_weight()
+            if remin_err_weight <= (C.design_distance() -1 // 2): # still can be decoded by global decoding
+                success = True
+                success_itr += 1
+            else:
+                success = False
+
+        overall_remin_err_weight += remin_err_weight
 
         if (i + 1) % print_freq == 0:
-            print("Iteration ", i + 1, "/", sim_itr, " Done.")
+            print("Iteration ", i + 1, "/", sim_itr, " Done.")   
 
-    if success_itr != 0:
-        avg_num_of_itr = (overall_num_itr / success_itr)
-    else:
-        avg_num_of_itr = max_num_of_itr
-
-    writer.writerow([n_err, avg_num_of_itr, 100 * (success_itr / sim_itr)])
+    writer.writerow([n_err, 100 * (success_itr / sim_itr), (overall_remin_err_weight / sim_itr)])
 
 print("## Simulation Done ##")
 res_file_handle.close()
