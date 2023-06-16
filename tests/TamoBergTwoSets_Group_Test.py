@@ -15,9 +15,9 @@ from AdditiveSubgroup import *
 
 q = 64  # Field size
 n = 64  # Code dimension
-k = 6  # Information/message dimension
+k = 12  # Information/message dimension
 r = [2, 5]  # Locality of the code
-local_minimum_distance = [3, 3]  # correct one error
+local_minimum_distance = [3, 3]  # correct two errors
 sub_group_type = ["add", "mult"]
 n_err = 1
 max_num_of_itr = 10
@@ -30,10 +30,44 @@ if sub_group_type[0] == "add":
     sub_group_size = r[0] + local_minimum_distance[0] -1
     additive_subgroups = find_additive_subgroups(F, sub_group_size)
 
-add_subgroup = [additive_subgroups[10], None]
+#add_subgroup = [None, None]
+#C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, shift_add=False, subgroup=add_subgroup)
 
-C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, shift_add=False, subgroup=add_subgroup)
+min_dd = n
+max_dd = 0
 
+min_k = n
+max_k = 0
+
+i = 0
+for g in additive_subgroups:
+    add_subgroup = [g, None]
+    C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, shift_add=False, subgroup=add_subgroup)
+
+    if C.max_dimension() > max_k:
+        max_k = C.max_dimension()
+        print("max_k", max_k)
+        print("max_k idx", i)
+
+    if C.max_dimension() < min_k:
+        min_k = C.max_dimension()
+        print("min_k", min_k)
+        print("min_k idx", i)
+
+    if C.design_distance() > max_dd:
+        max_dd = C.design_distance()
+        print("max_dd", max_dd)
+        print("max_dd idx", i)
+
+    if C.design_distance() < min_dd:
+        min_dd = C.design_distance()
+        print("min_dd", min_dd)
+        print("min_dd idx", i)
+
+    i += 1
+
+print("Done")
+exit()
 # Code space
 V = VectorSpace(F, n)
 

@@ -11,8 +11,8 @@ from AdditiveSubgroup import *
 q = 64  # Field size
 n = 64  # Code Length
 k = 6   # Code Dimension
-r = [2, 4]  # Locality of the code
-local_minimum_distance = [3, 4]  # correct one error
+r = [4, 3]  # Locality of the code
+local_minimum_distance = [5, 5]  # correct one error
 sub_group_type = ["add", "mult"]
 
 # GF
