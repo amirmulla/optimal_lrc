@@ -9,13 +9,15 @@ from networkx.algorithms import *
 from networkx.algorithms.connectivity import EdgeComponentAuxGraph
 from sage.coding.channel import StaticErrorRateChannel
 from TamoBergTwoSets import TamoBergCodeTwoSets
+from Expander import *
+from AdditiveSubgroup import *
 
 
 #set_random_seed(100)
 
 q = 64  # Field size
 n = 64  # Code dimension
-k = 12  # Information/message dimension
+k = 10  # Information/message dimension
 r = [2, 2]  # Locality of the code
 local_minimum_distance = [3, 3]  # correct one error
 sub_group_type = ["add", "add"]
@@ -37,7 +39,14 @@ M = VectorSpace(F, k)
 message = M.random_element()
 #message = zero_vector(F,k)
 
-C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type)
+# Specify Additive subgroup
+if sub_group_type[0] == "add":
+    sub_group_size = r[0] + local_minimum_distance[0]-1
+    additive_subgroups = find_additive_subgroups(F, sub_group_size)
+
+add_subgroup = [None, None]
+
+C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, shift_add=False, subgroup=add_subgroup)
 
 print("GF: ", q)
 print("Code dim n: ", n)
@@ -78,9 +87,9 @@ pos.update((i, (i - m - n / 2, 0)) for i in range(m, m + n))
 print("Partitions Graph is Connected:", nx.is_connected(G))
 print("Number of disjoint subgraphs:", nx.number_connected_components(G))
 
-aux_graph = EdgeComponentAuxGraph.construct(G)
-l_subgraphs = sorted(map(sorted, aux_graph.k_edge_components(k=1)))
-x = set(l_subgraphs[1])
-print(x)
-nx.draw(G.subgraph(x), with_labels=True, pos=pos, node_size=300, width=0.4)
-plt.show()
+for i in range(0,nx.number_connected_components(G)):
+    print(get_error_position_subgraph(G,i))
+
+#G_L = {n for n, d in G.nodes(data=True) if d["bipartite"] == 0}
+#nx.draw(G.subgraph(x), with_labels=True, pos=pos, node_size=300, width=0.4)
+#plt.show()
