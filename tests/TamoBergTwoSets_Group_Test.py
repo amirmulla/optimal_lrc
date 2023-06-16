@@ -4,7 +4,9 @@ import sys
 import time
 
 sys.path.append('./src')
-
+import networkx as nx
+import matplotlib.pyplot as plt
+from networkx.algorithms import *
 from TamoBergTwoSets import TamoBergCodeTwoSets
 from sage.coding.channel import StaticErrorRateChannel
 from AdditiveSubgroup import *
@@ -14,21 +16,24 @@ from AdditiveSubgroup import *
 q = 64  # Field size
 n = 64  # Code dimension
 k = 6  # Information/message dimension
-r = [4, 3]  # Locality of the code
-local_minimum_distance = [5, 6]  # correct one error
-sub_group_type = ["add", "add"]
+r = [2, 5]  # Locality of the code
+local_minimum_distance = [3, 3]  # correct one error
+sub_group_type = ["add", "mult"]
 n_err = 1
 max_num_of_itr = 10
 
 # GF
 F = GF(q, name="a", repr='int')
 
-additive_subgroups = find_additive_subgroups(F, 8)
-add_subgroup = additive_subgroups[5]
+# Specify Additive subgroup
+if sub_group_type[0] == "add":
+    sub_group_size = r[0] + local_minimum_distance[0] -1
+    additive_subgroups = find_additive_subgroups(F, sub_group_size)
 
-subgroup = [additive_subgroups[3], additive_subgroups[100]]
+add_subgroup = [additive_subgroups[10], None]
 
-print(subgroup)
+C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, shift_add=False, subgroup=add_subgroup)
+
 # Code space
 V = VectorSpace(F, n)
 
@@ -38,11 +43,28 @@ M = VectorSpace(F, k)
 message = M.random_element()
 # message = zero_vector(F,k)
 
-C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, subgroup=subgroup)
-
 sub_group, sub_group_type = C.sub_group()
 partitions, _ = C.partition()
 evalpts = C.evaluation_points()
+
+for p in partitions:
+    i = 1
+    for coset in p:
+        print(i, ": ",coset)
+        i += 1
+    print("########")
+
+G, G_L, G_R = C.bipartite_graph()
+m, n = len(G_L), len(G_R)
+pos = dict()
+pos.update((i, (i - m / 2, 1)) for i in range(m))
+pos.update((i, (i - m - n / 2, 0)) for i in range(m, m + n))
+nx.draw(G, with_labels=True, pos=pos, node_size=300, width=0.4)
+#plt.savefig('graph.png')
+plt.show()
+
+#print(G.nodes[7])
+#print(G.nodes[11])
 
 print("GF: ", q)
 print("Code dim n: ", n)
@@ -59,6 +81,8 @@ print("First Subgroup Size: ", len(sub_group[0]))
 print("Second Subgroup: ", sub_group[1])
 print("Second Subgroup Type: ", sub_group_type[1])
 print("Second Subgroup Size: ", len(sub_group[1]))
+print("Partitions Graph is Connected:", nx.is_connected(G))
+print("Number of disjoint subgraphs:", nx.number_connected_components(G))
 
 # åDec = C.decoder("IterativeErasureErrorDecoder", max_num_of_itr)
 Dec = C.decoder("TwoStepsErasureErrorDecoder", max_num_of_itr)
