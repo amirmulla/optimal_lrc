@@ -9,12 +9,12 @@ from TamoBergTwoSets import TamoBergCodeTwoSets
 
 #set_random_seed(100)
 
-q = 81  # Field size
-n = 81  # Code dimension
-k = 8  # Information/message dimension
-r = [5, 4]  # Locality of the code
-local_minimum_distance = [5, 7]  # correct one error
-sub_group_type = ["add", "mult"]
+q = 64  # Field size
+n = 64  # Code dimension
+k = 12  # Information/message dimension
+r = [6, 6]  # Locality of the code
+local_minimum_distance = [3, 3]  # correct one error
+sub_group_type = ["add", "add"]
 n_err = 2
 max_num_of_itr = 10
 
@@ -39,6 +39,7 @@ evalpts = C.evaluation_points()
 print("GF: ", q)
 print("Code dim n: ", n)
 print("Message dim k: ", k)
+print("Max k: ", C.max_dimension())
 print("Locality r1: ", r[0])
 print("Locality r2: ", r[1])
 print("Local Minimum distance d1: ", local_minimum_distance[0])
