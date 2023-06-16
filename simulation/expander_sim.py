@@ -32,7 +32,7 @@ use_enc = False
 # excat distnace
 exact_distance = None
 
-sim_itr = 10  # Statistical Accuracy
+sim_itr = 5000  # Statistical Accuracy
 print_freq_factor = 5  # Print frequency
 
 start_err = 1
