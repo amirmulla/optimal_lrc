@@ -193,7 +193,7 @@ for n_err in range(start_err, max_num_of_err + 1):
             remin_err_weight = 0
         else:
             remin_err_weight = (c - correct_c).hamming_weight()
-            if remin_err_weight <= (C.design_distance() -1 // 2): # still can be decoded by global decoding
+            if remin_err_weight <= ((C.design_distance() -1) // 2): # still can be decoded by global decoding
                 success = True
                 success_itr += 1
             else:
