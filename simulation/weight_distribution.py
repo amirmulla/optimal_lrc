@@ -20,7 +20,7 @@ F = GF(q, repr='int')
 
 # Specify Additive subgroup
 if sub_group_type[0] == "add":
-    sub_group_size = r[0] + local_minimum_distance[0] -1
+    sub_group_size = r[0] + local_minimum_distance[0] - 1
     additive_subgroups = find_additive_subgroups(F, sub_group_size)
 
 add_subgroup = [None, None]
