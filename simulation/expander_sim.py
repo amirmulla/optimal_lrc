@@ -24,7 +24,7 @@ from random import sample
 # "IterativeErasureErrorDecoder"
 # "TwoStepsDecoder"
 # "TwoStepsErasureErrorDecoder"
-decoder_str = "TwoStepsDecoder"
+decoder_str = "IterativeDecoder"
 
 # encode or use zero cw
 use_enc = False
