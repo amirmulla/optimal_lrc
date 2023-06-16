@@ -11,7 +11,8 @@ from sage.coding.channel import StaticErrorRateChannel
 from sage.coding.channel import random_error_vector
 from TamoBergTwoSets import TamoBergCodeTwoSets
 from sage.all import *
-import random
+from AdditiveSubgroup import *
+from random import sample
 
 # Simulation Control
 ####################
@@ -44,9 +45,9 @@ else:
 q = 64  # Field size
 n = 64  # Code Length
 k = 6   # Code Dimension
-r = [2, 2]  # Locality of the code
-local_minimum_distance = [3, 3]  # correct one error
-sub_group_type = ["add", "add"]
+r = [2, 4]  # Locality of the code
+local_minimum_distance = [3, 4]  # correct one error
+sub_group_type = ["add", "mult"]
 max_num_of_itr = 10
 
 # Shorten code in case of different sub-group types.
@@ -58,7 +59,14 @@ else:
 # GF
 F = GF(q, repr='int')
 
-C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, shift_add=False)
+# Specify Additive subgroup
+if sub_group_type[0] == "add":
+    sub_group_size = r[0] + local_minimum_distance[0] -1
+    additive_subgroups = find_additive_subgroups(F, sub_group_size)
+
+add_subgroup = [None, None]
+
+C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, shift_add=False, subgroup=add_subgroup)
 
 # Message Space
 M = VectorSpace(F, k)
@@ -167,7 +175,7 @@ for n_err in range(start_err, max_num_of_err):
     overall_num_itr = 0
 
     for i in range(0, sim_itr):
-        error_positions = random.sample(sub_graph_list, n_err)       
+        error_positions = sample(sub_graph_list, n_err)       
         err_vec = random_error_vector(n, F, error_positions)    
         r = c + err_vec
         if shorten:

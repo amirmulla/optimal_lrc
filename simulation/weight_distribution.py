@@ -6,18 +6,27 @@ from TamoBergTwoSets import TamoBergCodeTwoSets
 
 import csv
 from sage.all import *
+from AdditiveSubgroup import *
 
 q = 64  # Field size
 n = 64  # Code Length
-k = 6  # Code Dimension
-r = [3, 4]  # Locality of the code
-local_minimum_distance = [6, 5]  # correct one error
-sub_group_type = ["add", "add"]
+k = 6   # Code Dimension
+r = [2, 4]  # Locality of the code
+local_minimum_distance = [3, 4]  # correct one error
+sub_group_type = ["add", "mult"]
 
 # GF
 F = GF(q, repr='int')
 
-C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, shift_add=False)
+# Specify Additive subgroup
+if sub_group_type[0] == "add":
+    sub_group_size = r[0] + local_minimum_distance[0] -1
+    additive_subgroups = find_additive_subgroups(F, sub_group_size)
+
+add_subgroup = [None, None]
+
+C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, shift_add=False, subgroup=add_subgroup)
+
 sub_group, sub_group_type = C.sub_group()
 partitions, _ = C.partition()
 evalpts = C.evaluation_points()
