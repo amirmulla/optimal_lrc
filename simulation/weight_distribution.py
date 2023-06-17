@@ -7,12 +7,14 @@ from TamoBergTwoSets import TamoBergCodeTwoSets
 import csv
 from sage.all import *
 from AdditiveSubgroup import *
+import matplotlib.pyplot as plt
+import networkx as nx
 
 q = 64  # Field size
 n = 64  # Code Length
 k = 6   # Code Dimension
-r = [4, 3]  # Locality of the code
-local_minimum_distance = [5, 5]  # correct one error
+r = [2, 5]  # Locality of the code
+local_minimum_distance = [3, 3]  # correct one error
 sub_group_type = ["add", "mult"]
 
 # GF
@@ -31,9 +33,25 @@ sub_group, sub_group_type = C.sub_group()
 partitions, _ = C.partition()
 evalpts = C.evaluation_points()
 
+# Bipartite Graph
+G, G_L, G_R = C.bipartite_graph()
+left, right = len(G_L), len(G_R)
+pos = dict()
+pos.update((i, (i - left / 2, 1)) for i in range(left))
+pos.update((i, (i - left - right / 2, 0)) for i in range(left, left + right))
+nx.draw(G, with_labels=True, pos=pos, node_size=300, width=0.4)
+
 print(C)
 print("k_max: ", C.max_dimension())
 print("Design Distance: ", C.design_distance())
+print("Local Minimum distance d1: ", local_minimum_distance[0])
+print("Local Minimum distance d2: ", local_minimum_distance[1])
+print("First Subgroup: ", sub_group[0])
+print("First Subgroup Type: ", sub_group_type[0])
+print("First Subgroup Size: ", len(sub_group[0]))
+print("Second Subgroup: ", sub_group[1])
+print("Second Subgroup Type: ", sub_group_type[1])
+print("Second Subgroup Size: ", len(sub_group[1]))
 
 sim_name = "GF_" + str(q) + "_" + sub_group_type[0] + "_" + str(len(sub_group[0])) + "_" + sub_group_type[1] + "_" + str(len(sub_group[1]))
 res_dir = './results/' + sim_name + "_weight_dist"

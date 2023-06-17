@@ -189,22 +189,24 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
         return list(map(list, set(map(lambda i: tuple(i), h_cosets))))
 
     def _create_bipartite_graph(self):
-        G = nx.Graph()
+        G = nx.MultiDiGraph()
 
         # Add graph nodes
         k = 0
         for i in range(0, len(self._partition)):
             for j in range(0, len(self._partition[i])):
-                G.add_node(k, partition=i,
-                           coset=self._partition[i][j], bipartite=i)
+                G.add_node(k, partition=i, coset=self._partition[i][j], bipartite=i)
                 k += 1
 
         # Add graph Edges
+        evalpts_done = []
         for i in G.nodes():
             for e in G.nodes[i]["coset"]:
-                for j in G.nodes():
-                    if ((e in G.nodes[j]["coset"]) & (i != j)):
-                        G.add_edge(i, j, evalpts=e)
+                if e not in evalpts_done:
+                    for j in G.nodes():
+                        if ((e in G.nodes[j]["coset"]) & (i != j)):
+                            G.add_edge(i, j, evalpts=e)
+                            evalpts_done.append(e)
 
         G_L = {n for n, d in G.nodes(data=True) if d["bipartite"] == 0}
         G_R = set(G) - G_L
