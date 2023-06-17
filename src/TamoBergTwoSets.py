@@ -189,7 +189,7 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
         return list(map(list, set(map(lambda i: tuple(i), h_cosets))))
 
     def _create_bipartite_graph(self):
-        G = nx.MultiDiGraph()
+        G = nx.MultiGraph()
 
         # Add graph nodes
         k = 0
