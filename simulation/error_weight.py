@@ -100,7 +100,7 @@ nx.draw(G, with_labels=True, pos=pos, node_size=300, width=0.4)
 
 # Simulation name and directory
 sim_name = "GF_" + str(q) + "_" + sub_group_type[0] + "_" + str(len(sub_group[0])) + "_" + sub_group_type[1] + "_" + str(len(sub_group[1]))
-res_dir = './results/' + sim_name + "_expander_" + decoder_str
+res_dir = './results/' + sim_name + decoder_str
 
 # Create Directory of not exists
 isExist = os.path.exists(res_dir)
