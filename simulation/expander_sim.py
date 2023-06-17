@@ -163,47 +163,71 @@ writer.writerow(["Codeword : ", c])
 # Save Graph Picture
 plt.savefig(graph_path)
 
-writer.writerow(["Num_of_error_symbols", "probability_of_iterative_success", "probability_of_twostep_success", "avg_remin_err_weight"])
+writer.writerow(["Num_of_error_symbols", \
+    "probability_of_error_increase", "num_of_error_increase", \
+    "probability_of_error_no_change","num_of_error_no_change", \
+    "probability_of_error_decrease","num_of_error_decrease", \
+    "probability_of_failure", "num_of_failure", \
+    "avg_remin_err_weight", "min_remin_err_weight", "max_remin_err_weight"])
 
-#sub_graph_list = get_error_position_subgraph(G,3)
-#sub_graph_list = [0, 4, 8, 12, 18, 22, 26, 30, 32, 36, 40, 44, 50, 54, 58, 62] 
-sub_graph_list = list(range(0,16))
-print("subgraph evalpts idx:",sub_graph_list)
+## Error Injection
+#error_positions = get_error_position_subgraph(G,3)
+#error_positions = [0, 4, 8, 12, 18, 22, 26, 30, 32, 36, 40, 44, 50, 54, 58, 62]
+error_positions = list(range(0,16))
+print("error_positions:", error_positions)
 
-max_num_of_err = min(n-k, sim_num_of_err, len(sub_graph_list))
+max_num_of_err = min(n-k, sim_num_of_err, len(error_positions))
 print_freq = int(sim_itr / print_freq_factor)
 
 for n_err in range(start_err, max_num_of_err + 1):
     print("Error Weight: ", n_err)
-    twostep_success_itr = 0
-    iter_success_itr = 0
+    twostep_fail_itr = 0
+    iter_error_incr_itr = 0
+    iter_error_decr_itr = 0
+    iter_error_no_change = 0
     overall_remin_err_weight = 0
+    max_remin_err_weight = 0
+    min_remin_err_weight = n
 
     for i in range(0, sim_itr):
-        error_positions = sample(sub_graph_list, n_err)       
-        err_vec = random_error_vector(n, F, error_positions)    
+        error_positions_sample = sample(error_positions, n_err)
+        err_vec = random_error_vector(n, F, error_positions_sample)
         r = c + err_vec
         if shorten:
             r[0] = c[0]
 
         e = r - c
         correct_c, num_of_itr = Dec.decode_to_code(r)
+        remin_err_weight = (c - correct_c).hamming_weight()
 
-        if (correct_c == c):
-            twostep_success_itr += 1
-            iter_success_itr += 1
-            remin_err_weight = 0
-        else:
-            remin_err_weight = (c - correct_c).hamming_weight()
-            if remin_err_weight <= ((C.design_distance() -1) // 2): # still can be decoded by global decoding
-                twostep_success_itr += 1
+        if remin_err_weight > max_remin_err_weight:
+            max_remin_err_weight = remin_err_weight
+
+        if remin_err_weight < min_remin_err_weight:
+            min_remin_err_weight = remin_err_weight
 
         overall_remin_err_weight += remin_err_weight
 
-        if (i + 1) % print_freq == 0:
-            print("Iteration ", i + 1, "/", sim_itr, " Done.")   
+        if remin_err_weight > n_err:
+            iter_error_incr_itr += 1
+        elif remin_err_weight < n_err:
+            iter_error_decr_itr += 1
+        else:
+            iter_error_no_change += 1
 
-    writer.writerow([n_err, 100 * (iter_success_itr / sim_itr) ,100 * (twostep_success_itr / sim_itr), (overall_remin_err_weight / sim_itr)])
+        if n_err <=  ((C.design_distance() -1) // 2):
+            if remin_err_weight > ((C.design_distance() -1) // 2):
+                twostep_fail_itr += 1
+
+        if (i + 1) % print_freq == 0:
+            print("Iteration ", i + 1, "/", sim_itr, " Done.")
+
+    writer.writerow([n_err, \
+        100 * (iter_error_incr_itr / sim_itr) , iter_error_incr_itr, \
+        100 * (iter_error_no_change / sim_itr) , iter_error_no_change, \
+        100 * (iter_error_decr_itr / sim_itr) , iter_error_decr_itr, \
+        100 * (twostep_fail_itr / sim_itr) , twostep_fail_itr, \
+        (overall_remin_err_weight / sim_itr), min_remin_err_weight, max_remin_err_weight])
 
 print("## Simulation Done ##")
 res_file_handle.close()
