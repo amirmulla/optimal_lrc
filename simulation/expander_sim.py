@@ -41,15 +41,17 @@ start_err = 1
 if exact_distance is None:
     sim_num_of_err = 16
 else:
-    sim_num_of_err = exact_distance + 1 
+    sim_num_of_err = exact_distance + 1
 
 q = 64  # Field size
 n = 64  # Code Length
 k = 6   # Code Dimension
-r = [2, 4]  # Locality of the code
-local_minimum_distance = [3, 4]  # correct one error
+r = [2, 5]  # Locality of the code
+local_minimum_distance = [3, 3]  # correct one error
 sub_group_type = ["add", "mult"]
 max_num_of_itr = 10
+biased = True
+t = 16 # error boundary [0,t]
 
 # Shorten code in case of different sub-group types.
 if sub_group_type[0] != sub_group_type[1]:
@@ -100,7 +102,11 @@ nx.draw(G, with_labels=True, pos=pos, node_size=300, width=0.4)
 
 # Simulation name and directory
 sim_name = "GF_" + str(q) + "_" + sub_group_type[0] + "_" + str(len(sub_group[0])) + "_" + sub_group_type[1] + "_" + str(len(sub_group[1]))
-res_dir = './results/' + sim_name + "_expander_" + decoder_str
+if biased == True:
+    res_dir = './results/' + sim_name + "_expander_biased_" + decoder_str
+else:
+    res_dir = './results/' + sim_name + "_expander_uniform_" + decoder_str
+
 
 # Create Directory of not exists
 isExist = os.path.exists(res_dir)
@@ -173,7 +179,11 @@ writer.writerow(["Num_of_error_symbols", \
 ## Error Injection
 #error_positions = get_error_position_subgraph(G,3)
 #error_positions = [0, 4, 8, 12, 18, 22, 26, 30, 32, 36, 40, 44, 50, 54, 58, 62]
-error_positions = list(range(0,16))
+if biased == True:
+    error_positions = list(range(0,t))
+else:
+    error_positions = list(range(0,n))
+
 print("error_positions:", error_positions)
 
 max_num_of_err = min(n-k, sim_num_of_err, len(error_positions))
