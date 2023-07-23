@@ -92,6 +92,3 @@ for i in range(0, int(delta*len(S))):
             eps = tmp
 
     print(i+1, eps)
-
-
-print(nx.algebraic_connectivity(G, normalized=True))
