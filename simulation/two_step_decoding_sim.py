@@ -21,7 +21,7 @@ from AdditiveSubgroup import *
 # "IterativeErasureErrorDecoder"
 # "TwoStepsDecoder"
 # "TwoStepsErasureErrorDecoder"
-decoder_str = "TwoStepsDecoder"
+decoder_str = "TwoStepsErasureErrorDecoder"
 
 # encode or use zero cw
 use_enc = False
@@ -29,21 +29,21 @@ use_enc = False
 # excat distnace
 exact_distance = None
 
-sim_itr = 5000  # Statistical Accuracy
+sim_itr = 10  # Statistical Accuracy
 print_freq_factor = 5  # Print frequency
 
 # Number of error to simulate
 if exact_distance is None:
-    sim_num_of_err = 125
+    sim_num_of_err = 2
 else:
-    sim_num_of_err = exact_distance + 1 
+    sim_num_of_err = exact_distance + 1
 
-q = 64  # Field size
-n = 64  # Code Length
-k = 6   # Code Dimension
-r = [2, 4]  # Locality of the code
-local_minimum_distance = [3, 4]  # correct one error
-sub_group_type = ["add", "mult"]
+q = 16  # Field size
+n = 16  # Code Length
+k = 4  # Code Dimension
+r = [2, 2]  # Locality of the code
+local_minimum_distance = [3, 3]  # correct one error
+sub_group_type = ["add", "add"]
 max_num_of_itr = 10
 
 # Shorten code in case of different sub-group types.
@@ -175,7 +175,12 @@ for n_err in range(1, max_num_of_err):
             r[0] = c[0]
 
         e = r - c
-        correct_c, num_of_itr = Dec.decode_to_code(r)
+        if(decoder_str == "TwoStepsErasureErrorDecoder"):
+            correct_c, num_of_itr, _ = Dec.decode_to_code(r)
+        else:
+            correct_c, num_of_itr = Dec.decode_to_code(r)
+        if(decoder_str == "IterativeErasureErrorDecoder"):
+            correct_c = correct_c[0]
 
         if (correct_c == c):
             success = True
