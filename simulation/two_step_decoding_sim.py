@@ -36,7 +36,7 @@ print_freq_factor = 5  # Print frequency
 if exact_distance is None:
     sim_num_of_err = 125
 else:
-    sim_num_of_err = exact_distance + 1 
+    sim_num_of_err = exact_distance + 1
 
 q = 64  # Field size
 n = 64  # Code Length
@@ -175,7 +175,13 @@ for n_err in range(1, max_num_of_err):
             r[0] = c[0]
 
         e = r - c
-        correct_c, num_of_itr = Dec.decode_to_code(r)
+        if(decoder_str == "TwoStepsErasureErrorDecoder"):
+            correct_c, num_of_itr, _ = Dec.decode_to_code(r)
+        else:
+            correct_c, num_of_itr = Dec.decode_to_code(r)
+
+        if(decoder_str == "IterativeErasureErrorDecoder"):
+            correct_c = correct_c[0]
 
         if (correct_c == c):
             success = True
