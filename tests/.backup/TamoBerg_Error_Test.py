@@ -3,7 +3,7 @@ sys.path.append('./src')
 
 from sage.all import *
 from sage.coding.channel import StaticErrorRateChannel
-from TamoBerg import TamoBergCode
+from TamoBarg import TamoBargCode
 
 # LRC Parameters
 q = 243  # Field size
@@ -35,7 +35,7 @@ message = M.random_element()
 # Code space
 V = VectorSpace(F, n)
 
-C = TamoBergCode(F, n, k, r, local_minimum_distance, sub_group_type="add")
+C = TamoBargCode(F, n, k, r, local_minimum_distance, sub_group_type="add")
 
 print("Minimum distance d: ", C.minimum_distance())
 

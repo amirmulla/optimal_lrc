@@ -7,7 +7,7 @@ sys.path.append('./src')
 import networkx as nx
 import matplotlib.pyplot as plt
 from networkx.algorithms import *
-from TamoBergTwoSets import TamoBergCodeTwoSets
+from TamoBargTwoSets import TamoBargCodeTwoSets
 from sage.coding.channel import StaticErrorRateChannel
 from AdditiveSubgroup import *
 
@@ -31,7 +31,7 @@ if sub_group_type[0] == "add":
     additive_subgroups = find_additive_subgroups(F, sub_group_size)
 
 #add_subgroup = [None, None]
-#C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, shift_add=False, subgroup=add_subgroup)
+#C = TamoBargCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, shift_add=False, subgroup=add_subgroup)
 
 min_dd = n
 max_dd = 0
@@ -42,7 +42,7 @@ max_k = 0
 i = 0
 for g in additive_subgroups:
     add_subgroup = [g, None]
-    C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, shift_add=False, subgroup=add_subgroup)
+    C = TamoBargCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, shift_add=False, subgroup=add_subgroup)
 
     if C.max_dimension() > max_k:
         max_k = C.max_dimension()

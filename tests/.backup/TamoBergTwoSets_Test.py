@@ -4,7 +4,7 @@ sys.path.append('./src')
 
 from sage.all import *
 from sage.coding.channel import StaticErrorRateChannel
-from TamoBergTwoSets import TamoBergCodeTwoSets
+from TamoBargTwoSets import TamoBargCodeTwoSets
 from AdditiveSubgroup import *
 
 q = 81  # Field size
@@ -27,7 +27,7 @@ M = VectorSpace(F, k)
 # Choose random message
 message = M.random_element()
 
-#C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type)
+#C = TamoBargCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type)
 
 # Specify Additive subgroup
 #if sub_group_type[0] == "add":
@@ -35,7 +35,7 @@ message = M.random_element()
 #    additive_subgroups = find_additive_subgroups(F, sub_group_size)
 
 #add_subgroup = [additive_subgroups[0], None]
-C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, shift_add=False)#, subgroup=add_subgroup)
+C = TamoBargCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, shift_add=False)#, subgroup=add_subgroup)
 
 sub_group, sub_group_type = C.sub_group()
 #partitions, _ = C.partition()

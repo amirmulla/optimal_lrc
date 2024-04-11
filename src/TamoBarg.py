@@ -7,7 +7,7 @@ from sage.coding.grs_code import GeneralizedReedSolomonCode
 ####################### code ###############################
 
 
-class TamoBergCode(AbstractLinearCode):
+class TamoBargCode(AbstractLinearCode):
     _registered_encoders = {}
     _registered_decoders = {}
 
@@ -59,13 +59,13 @@ class TamoBergCode(AbstractLinearCode):
         self._evaluation_points = flatten(self._partition)
 
     def __eq__(self, other):
-        return isinstance(other, TamoBergCode) \
+        return isinstance(other, TamoBargCode) \
             and self.length() == other.length() \
             and self.dimension() == other.dimension() \
             and self.locality() == other.locality()
 
     def _repr_(self):
-        return "[%s, %s, %s] Tamo-Berg Code over GF(%s)"\
+        return "[%s, %s, %s] Tamo-Barg Code over GF(%s)"\
             % (self.length(), self.dimension(), self.locality(), self.base_field().cardinality())
 
     def _list_mult_subgroups(self):
@@ -135,7 +135,7 @@ class TamoBergCode(AbstractLinearCode):
 ####################### encoders ###############################
 
 
-class TamoBergVectorEncoder(Encoder):
+class TamoBargVectorEncoder(Encoder):
 
     def __init__(self, code):
         self._partition, self._partition_size = code.partition()
@@ -217,7 +217,7 @@ class TamoBergVectorEncoder(Encoder):
 ######################### decoders #################################
 
 
-class TamoBergErasureDecoder(Decoder):
+class TamoBargErasureDecoder(Decoder):
 
     def __init__(self, code):
         input_space = cartesian_product([code.ambient_space(),VectorSpace(GF(2),code.ambient_space().dimension())])
@@ -261,7 +261,7 @@ class TamoBergErasureDecoder(Decoder):
         return (vector(C.base_field(), l))
 
 
-class TamoBergErrorDecoder(Decoder):
+class TamoBargErrorDecoder(Decoder):
 
     def __init__(self, code):
         input_space = cartesian_product([code.ambient_space(),VectorSpace(GF(2),code.ambient_space().dimension())])
@@ -297,6 +297,6 @@ class TamoBergErrorDecoder(Decoder):
 
 
 ####################### registration ###############################
-TamoBergCode._registered_encoders["VectorEncoder"] = TamoBergVectorEncoder
-TamoBergCode._registered_decoders["ErasureDecoder"] = TamoBergErasureDecoder
-TamoBergCode._registered_decoders["ErrorDecoder"] = TamoBergErrorDecoder
+TamoBargCode._registered_encoders["VectorEncoder"] = TamoBargVectorEncoder
+TamoBargCode._registered_decoders["ErasureDecoder"] = TamoBargErasureDecoder
+TamoBargCode._registered_decoders["ErrorDecoder"] = TamoBargErrorDecoder

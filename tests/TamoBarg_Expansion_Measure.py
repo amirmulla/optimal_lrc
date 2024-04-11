@@ -2,7 +2,7 @@ from sage.all import *
 import sys
 sys.path.append('./src')
 
-from TamoBergTwoSets import TamoBergCodeTwoSets
+from TamoBargTwoSets import TamoBargCodeTwoSets
 from networkx.algorithms import *
 import networkx as nx
 
@@ -27,7 +27,7 @@ F = GF(q, name="a", repr='int')
 #    additive_subgroups = find_additive_subgroups(F, sub_group_size)
 add_subgroup = [None, None]
 
-C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance,
+C = TamoBargCodeTwoSets(F, n, k, r, local_minimum_distance,
                         sub_group_type, shift_add=False, subgroup=add_subgroup)
 
 print("GF: ", q)

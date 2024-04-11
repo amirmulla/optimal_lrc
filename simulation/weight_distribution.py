@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.append('./src')
 
-from TamoBergTwoSets import TamoBergCodeTwoSets
+from TamoBargTwoSets import TamoBargCodeTwoSets
 
 import csv
 from sage.all import *
@@ -29,12 +29,12 @@ if sub_group_type[0] == "add":
 # GF(64) 4x7 --- idx 10
 add_idx = None
 
-if add_idx is None:   
+if add_idx is None:
     add_subgroup = [None, None]
 else:
     add_subgroup = [additive_subgroups[add_idx], None]
 
-C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, shift_add=False, subgroup=add_subgroup)
+C = TamoBargCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, shift_add=False, subgroup=add_subgroup)
 
 sub_group, sub_group_type = C.sub_group()
 partitions, _ = C.partition()
@@ -65,7 +65,7 @@ print("Partitions Graph Edge Expansion:", cuts.edge_expansion(G, G_R))
 
 if add_idx is None:
     sim_name = "GF_" + str(q) + "_" + sub_group_type[0] + "_" + str(len(sub_group[0])) + "_" + sub_group_type[1] + "_" + str(len(sub_group[1]))
-else:    
+else:
     sim_name = "GF_" + str(q) + "_" + sub_group_type[0] + "_" + str(len(sub_group[0])) + "_" + sub_group_type[1] + "_" + str(len(sub_group[1])) + "_idx_" + str(add_idx)
 
 res_dir = './results/' + sim_name + "_weight_dist"

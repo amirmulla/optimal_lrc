@@ -7,7 +7,7 @@ import networkx as nx
 import pandas as pd
 import matplotlib.pyplot as plt
 from networkx.algorithms import *
-from TamoBergTwoSets import TamoBergCodeTwoSets
+from TamoBargTwoSets import TamoBargCodeTwoSets
 from Expander import *
 from AdditiveSubgroup import *
 from itertools import combinations
@@ -50,8 +50,8 @@ if sub_group_type[0] == "add":
 #add_subgroup = [additive_subgroups[0], None]
 add_subgroup = [None, None]
 
-#C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, shift_add=True, subgroup=add_subgroup)
-C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type)
+#C = TamoBargCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, shift_add=True, subgroup=add_subgroup)
+C = TamoBargCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type)
 
 print("GF: ", q)
 print("Code dim n: ", n)

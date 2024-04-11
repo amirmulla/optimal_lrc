@@ -5,8 +5,8 @@ import os
 sys.path.append('./src')
 
 from sage.all import *
-from TamoBergTwoSets import *
-from src.TamoBergTwoSets import TamoBergCodeTwoSets
+from TamoBargTwoSets import *
+from TamoBargTwoSets import TamoBargCodeTwoSets
 from sage.coding.channel import StaticErrorRateChannel
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -47,7 +47,7 @@ else:
 F = GF(q, repr='int')
 
 # Code
-C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type)
+C = TamoBargCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type)
 
 # Message Space
 M = VectorSpace(F, k)

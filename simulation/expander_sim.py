@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 from sage.coding.channel import StaticErrorRateChannel
 from sage.coding.channel import random_error_vector
-from TamoBergTwoSets import TamoBergCodeTwoSets
+from TamoBargTwoSets import TamoBargCodeTwoSets
 from sage.all import *
 from Expander import *
 from AdditiveSubgroup import *
@@ -69,7 +69,7 @@ if sub_group_type[0] == "add":
 
 add_subgroup = [None, None]
 
-C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, shift_add=False, subgroup=add_subgroup)
+C = TamoBargCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, shift_add=False, subgroup=add_subgroup)
 
 # Message Space
 M = VectorSpace(F, k)

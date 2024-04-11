@@ -9,7 +9,7 @@ from networkx.algorithms import *
 ####################### code ###############################
 
 
-class TamoBergCodeTwoSets(AbstractLinearCode):
+class TamoBargCodeTwoSets(AbstractLinearCode):
     _registered_encoders = {}
     _registered_decoders = {}
 
@@ -135,13 +135,13 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
                     "code dimension is too big. maximum code dimension: ", self.max_dimension())
 
     def __eq__(self, other):
-        return isinstance(other, TamoBergCodeTwoSets) and \
+        return isinstance(other, TamoBargCodeTwoSets) and \
             self.length() == other.length() and \
             self.dimension() == other.dimension() and \
             self.locality() == other.locality()
 
     def _repr_(self):
-        return "[%s, %s, %s] Tamo-Berg Code over GF(%s)" % (self.length(), self.dimension(), self.locality(), self.base_field().cardinality())
+        return "[%s, %s, %s] Tamo-Barg Code over GF(%s)" % (self.length(), self.dimension(), self.locality(), self.base_field().cardinality())
 
     def _list_mult_subgroups(self):
         multiplicative_subgroups = {}
@@ -270,7 +270,7 @@ class TamoBergCodeTwoSets(AbstractLinearCode):
 ####################### encoders ###############################
 
 
-class TamoBergVectorEncoder(Encoder):
+class TamoBargVectorEncoder(Encoder):
 
     def __init__(self, code):
         self._num_of_sets = code.num_of_sets()
@@ -397,8 +397,8 @@ class TamoBergVectorEncoder(Encoder):
 
 ######################### decoders #################################
 
-###### TamoBergIterariveDecoder #######
-class TamoBergIterariveDecoder(Decoder):
+###### TamoBargIterariveDecoder #######
+class TamoBargIterariveDecoder(Decoder):
 
     def __init__(self, code, max_num_of_itr=10):
         super().__init__(code, code.ambient_space(), "VectorEncoder")
@@ -458,7 +458,7 @@ class TamoBergIterariveDecoder(Decoder):
 ###### Error-and-Erasure Iterarive Decoder #######
 
 
-class TamoBergIterariveEEDecoder(Decoder):
+class TamoBargIterariveEEDecoder(Decoder):
 
     def __init__(self, code, max_num_of_itr = 10, erasure_start_itr = None):
         super().__init__(code, code.ambient_space(), "VectorEncoder")
@@ -565,10 +565,10 @@ class TamoBergIterariveEEDecoder(Decoder):
         corr_c_and_erasure_vector = r, vector(GF(2), erasure_vector)
         return corr_c_and_erasure_vector, num_itr
 
-###### TamoBergGlobalDecoder #######
+###### TamoBargGlobalDecoder #######
 
 
-class TamoBergGlobalDecoder(Decoder):
+class TamoBargGlobalDecoder(Decoder):
 
     def __init__(self, code):
         super().__init__(code, code.ambient_space(), "VectorEncoder")
@@ -583,8 +583,8 @@ class TamoBergGlobalDecoder(Decoder):
         return self._global_decoder.decode_to_code(r)
 
 
-###### TamoBergGlobal-Error-and-Erasure-Decoder #######
-class TamoBergGlobalEEDecoder(Decoder):
+###### TamoBargGlobal-Error-and-Erasure-Decoder #######
+class TamoBargGlobalEEDecoder(Decoder):
 
     def __init__(self, code):
         super().__init__(code, code.ambient_space(), "VectorEncoder")
@@ -624,13 +624,13 @@ class TamoBergGlobalEEDecoder(Decoder):
         return corr_c
 
 
-###### TamoBergTwoStepDecoder #######
-class TamoBergTwoStepDecoder(Decoder):
+###### TamoBargTwoStepDecoder #######
+class TamoBargTwoStepDecoder(Decoder):
 
     def __init__(self, code, max_num_of_itr=10):
         super().__init__(code, code.ambient_space(), "VectorEncoder")
-        self._iter_decoder = TamoBergIterariveDecoder(code, max_num_of_itr)
-        self._global_decoder = TamoBergGlobalDecoder(code)
+        self._iter_decoder = TamoBargIterariveDecoder(code, max_num_of_itr)
+        self._global_decoder = TamoBargGlobalDecoder(code)
 
     def _repr_(self):
         return "Two-Steps Decoder for %s" % self.code()
@@ -648,13 +648,13 @@ class TamoBergTwoStepDecoder(Decoder):
         return r, num_itr
 
 
-###### TamoBergTwoStepEEDecoder #######
-class TamoBergTwoStepEEDecoder(Decoder):
+###### TamoBargTwoStepEEDecoder #######
+class TamoBargTwoStepEEDecoder(Decoder):
 
     def __init__(self, code, max_num_of_itr=10, erasure_start_itr=None):
         super().__init__(code, code.ambient_space(), "VectorEncoder")
-        self._iter_ee_decoder = TamoBergIterariveEEDecoder(code, max_num_of_itr, erasure_start_itr)
-        self._global_ee_decoder = TamoBergGlobalEEDecoder(code)
+        self._iter_ee_decoder = TamoBargIterariveEEDecoder(code, max_num_of_itr, erasure_start_itr)
+        self._global_ee_decoder = TamoBargGlobalEEDecoder(code)
 
     def _repr_(self):
         return "Two-Steps Erasure-and-Error Decoder for %s" % self.code()
@@ -674,10 +674,10 @@ class TamoBergTwoStepEEDecoder(Decoder):
 
 
 ####################### registration ###############################
-TamoBergCodeTwoSets._registered_encoders["VectorEncoder"] = TamoBergVectorEncoder
-TamoBergCodeTwoSets._registered_decoders["IterativeDecoder"] = TamoBergIterariveDecoder
-TamoBergCodeTwoSets._registered_decoders["TwoStepsDecoder"] = TamoBergTwoStepDecoder
-TamoBergCodeTwoSets._registered_decoders["GlobalDecoder"] = TamoBergGlobalDecoder
-TamoBergCodeTwoSets._registered_decoders["IterativeErasureErrorDecoder"] = TamoBergIterariveEEDecoder
-TamoBergCodeTwoSets._registered_decoders["GlobalErasureErrorDecoder"] = TamoBergGlobalEEDecoder
-TamoBergCodeTwoSets._registered_decoders["TwoStepsErasureErrorDecoder"] = TamoBergTwoStepEEDecoder
+TamoBargCodeTwoSets._registered_encoders["VectorEncoder"] = TamoBargVectorEncoder
+TamoBargCodeTwoSets._registered_decoders["IterativeDecoder"] = TamoBargIterariveDecoder
+TamoBargCodeTwoSets._registered_decoders["TwoStepsDecoder"] = TamoBargTwoStepDecoder
+TamoBargCodeTwoSets._registered_decoders["GlobalDecoder"] = TamoBargGlobalDecoder
+TamoBargCodeTwoSets._registered_decoders["IterativeErasureErrorDecoder"] = TamoBargIterariveEEDecoder
+TamoBargCodeTwoSets._registered_decoders["GlobalErasureErrorDecoder"] = TamoBargGlobalEEDecoder
+TamoBargCodeTwoSets._registered_decoders["TwoStepsErasureErrorDecoder"] = TamoBargTwoStepEEDecoder

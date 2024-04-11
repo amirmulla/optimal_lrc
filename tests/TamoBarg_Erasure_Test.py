@@ -3,7 +3,7 @@ sys.path.append('./src')
 
 from sage.coding.channel import ErrorErasureChannel
 from sage.all import *
-from TamoBerg import TamoBergCode
+from TamoBarg import TamoBargCode
 
 q = 13  # Field size
 n = 12  # Code dimension
@@ -24,7 +24,7 @@ message = M.random_element()
 # Code space
 V = VectorSpace(F, n)
 
-C = TamoBergCode(F, n, k, r, local_minimum_distance)
+C = TamoBargCode(F, n, k, r, local_minimum_distance)
 
 sub_group, sub_group_type = C.sub_group()
 partitions, _ = C.partition()

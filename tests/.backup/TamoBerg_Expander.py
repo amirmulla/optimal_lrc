@@ -9,7 +9,7 @@ from networkx.algorithms import bipartite
 from networkx.algorithms import *
 from networkx.algorithms.connectivity import EdgeComponentAuxGraph
 from sage.coding.channel import StaticErrorRateChannel
-from TamoBergTwoSets import TamoBergCodeTwoSets
+from TamoBargTwoSets import TamoBargCodeTwoSets
 from Expander import *
 from AdditiveSubgroup import *
 
@@ -47,7 +47,7 @@ if sub_group_type[0] == "add":
 
 add_subgroup = [None, None]
 
-C = TamoBergCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, shift_add=False, subgroup=add_subgroup)
+C = TamoBargCodeTwoSets(F, n, k, r, local_minimum_distance, sub_group_type, shift_add=False, subgroup=add_subgroup)
 
 print("GF: ", q)
 print("Code dim n: ", n)
