@@ -66,8 +66,6 @@ for g in additive_subgroups:
 
     i += 1
 
-print("Done")
-exit()
 # Code space
 V = VectorSpace(F, n)
 
